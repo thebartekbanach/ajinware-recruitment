@@ -3,7 +3,7 @@
 {
 	"name": "AjinWare recruitment",
 	"dockerFile": "Dockerfile",
-	
+
     // DevPod on WSL2 non-native file system performance fix
 	"workspaceFolder": "/workspace",
     "workspaceMount": "source=${localWorkspaceFolder},target=/host/workspace,type=bind,consistency=cached",
@@ -23,7 +23,8 @@
 				"streetsidesoftware.code-spell-checker",
                 "ms-azuretools.vscode-docker",
                 "EditorConfig.EditorConfig",
-                "dbaeumer.vscode-eslint"
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
 			]
 		}
 	},
@@ -35,7 +36,7 @@
 			"label": "Development backend service port",
 			"onAutoForward": "notify"
 		},
-        
+
 		"3051": {
 			"label": "Production backend service port",
 			"onAutoForward": "notify"
