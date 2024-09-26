@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 
-enum Environment {
+export enum Environment {
     Development = "development",
     Production = "production",
 }
@@ -9,6 +9,7 @@ enum Environment {
 @Injectable()
 export class EnvConfig {
     environment: Environment
+    logsDirectory: string
 
     constructor(@Inject(ConfigService) configService: ConfigService) {
         const env = configService.getOrThrow<string>("NODE_ENV")
@@ -20,5 +21,17 @@ export class EnvConfig {
         }
 
         this.environment = env as Environment
+
+        const logsDirectory = configService.getOrThrow<string>("LOGS_DIRECTORY")
+
+        if (!logsDirectory) {
+            throw new Error("Logs directory cannot be empty")
+        }
+
+        if (!logsDirectory.endsWith("/")) {
+            throw new Error("Logs directory must end with a /")
+        }
+
+        this.logsDirectory = logsDirectory
     }
 }

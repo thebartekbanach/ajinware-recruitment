@@ -4,6 +4,7 @@ import { ApiConfig } from "./config/api"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { INestApplication } from "@nestjs/common"
 import { EnvConfig } from "./config/env"
+import { createWinstonLogger } from "./common/logger/create-logger"
 
 function setupSwagger(app: INestApplication) {
     const { environment } = app.get(EnvConfig)
@@ -23,7 +24,9 @@ function setupSwagger(app: INestApplication) {
 }
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule)
+    const app = await NestFactory.create(AppModule, {
+        logger: createWinstonLogger(),
+    })
     setupSwagger(app)
     const { port } = app.get(ApiConfig)
     await app.listen(port)
