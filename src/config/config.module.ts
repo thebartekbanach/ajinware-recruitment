@@ -2,8 +2,9 @@ import { Global, Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
 import { EnvConfig } from "./env"
 import { ApiConfig } from "./api"
+import { DbConfig } from "./db"
 
-const configurations = [EnvConfig, ApiConfig]
+const configurations = [EnvConfig, ApiConfig, DbConfig]
 
 @Global()
 @Module({
