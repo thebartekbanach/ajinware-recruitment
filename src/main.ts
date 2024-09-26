@@ -25,6 +25,9 @@ function setupSwagger(app: INestApplication) {
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
+        // winston logger is out of dependency injection scope
+        // because nestjs prints to console before the logger is created
+        // so we need to construct and pass it manually
         logger: createWinstonLogger(),
     })
     setupSwagger(app)
