@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
 import { ApiConfig } from "./config/api"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
-import { INestApplication } from "@nestjs/common"
+import { INestApplication, ValidationPipe } from "@nestjs/common"
 import { EnvConfig } from "./config/env"
 import { createWinstonLogger } from "./common/logger/create-logger"
 
@@ -35,6 +35,7 @@ async function bootstrap() {
         logger: createWinstonLogger(),
     })
     setupSwagger(app)
+    app.useGlobalPipes(new ValidationPipe())
     const { port } = app.get(ApiConfig)
     await app.listen(port)
 }
