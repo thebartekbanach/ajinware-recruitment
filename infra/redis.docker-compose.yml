@@ -1,0 +1,11 @@
+services:
+    redis:
+        container_name: Shared.Coasters.Redis
+        image: redis:7.4.0-alpine
+        networks:
+            - coasters-backend-services
+
+networks:
+    coasters-backend-services:
+        name: Shared.Coasters.Backend.Services
+        driver: bridge

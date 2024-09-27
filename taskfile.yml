@@ -1,0 +1,12 @@
+version: 3
+
+includes:
+    infra:
+        taskfile: infra/taskfile.yml
+        dir: infra
+
+tasks:
+    default:
+        desc: List all available tasks
+        cmds:
+            - task --list-all

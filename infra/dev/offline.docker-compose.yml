@@ -1,0 +1,24 @@
+services:
+    offline:
+        container_name: Dev.Coasters.Offline
+        image: coasters/backend
+        build:
+            context: ../../
+            dockerfile: Dockerfile
+            target: dev
+        tty: true # helps to preserve colors in the console
+        volumes:
+            - ../../:/app # mount the project root directory, backend hot reload
+            - /app/node_modules # prevent node_modules from being overwritten
+        environment:
+            - NODE_ENV=development
+            - NODE_NAME=Coasters.Offline
+            - NODE_BASE_URL=http://localhost:3050
+            - PORT=3050
+            - LOGS_DIRECTORY=/app/data/dev/offline/logs/
+            - COASTERS_DATABASE_PATH=/app/data/dev/offline/coasters.db.json
+            - OFFLINE_MODE=true
+        ports:
+            - 3050:3050 # http api
+            - 9229:9229 # nodejs debugger
+

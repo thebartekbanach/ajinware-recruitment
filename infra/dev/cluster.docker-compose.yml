@@ -1,0 +1,50 @@
+x-templates:
+    backend: &node
+        image: coasters/backend
+        build:
+            context: ../../
+            dockerfile: Dockerfile
+            target: dev
+        tty: true # helps to preserve colors in the console
+        volumes:
+            - ../../:/app # mount the project root directory, backend hot reload
+            - /app/node_modules # prevent node_modules from being overwritten
+        networks:
+            - coasters-backend-services
+
+services:
+    node-1:
+        <<: *node
+        container_name: Dev.Coasters.Cluster.Node-1
+        environment:
+            - NODE_ENV=development
+            - REDIS_HOST=Shared.Coasters.Redis
+            - REDIS_PORT=6379
+            - NODE_NAME=Coasters.Cluster.Node-1
+            - NODE_BASE_URL=http://localhost:3050
+            - PORT=3050
+            - LOGS_DIRECTORY=/app/data/dev/cluster/node-1/logs/
+            - COASTERS_DATABASE_PATH=/app/data/dev/cluster/node-1/coasters.db.json
+        ports:
+            - 3050:3050 # http api
+            - 9229:9229 # nodejs debugger
+
+    node-2:
+        <<: *node
+        container_name: Dev.Coasters.Cluster.Node-2
+        ports:
+            - 3051:3051 # http api
+            - 9230:9230 # nodejs debugger
+        environment:
+            - NODE_ENV=development
+            - REDIS_HOST=Shared.Coasters.Redis
+            - REDIS_PORT=6379
+            - NODE_NAME=Coasters.Cluster.Node-2
+            - NODE_BASE_URL=http://localhost:3051
+            - LOGS_DIRECTORY=/app/data/dev/cluster/node-2/logs/
+            - COASTERS_DATABASE_PATH=/app/data/dev/cluster/node-2/coasters.db.json
+
+networks:
+    coasters-backend-services:
+        name: Shared.Coasters.Backend.Services
+        driver: bridge

@@ -1,0 +1,27 @@
+version: 3
+
+tasks:
+    redis:start:
+        desc: Start the redis server in background
+        dir: .
+        cmds:
+            - docker-compose -f redis.docker-compose.yml up -d
+
+    redis:stop:
+        desc: Stop the redis server
+        dir: .
+        cmds:
+            - docker-compose -f redis.docker-compose.yml stop
+
+    dev:offline:start:
+        desc: Start the development offline server
+        dir: dev
+        cmds:
+            - docker-compose -f offline.docker-compose.yml up --remove-orphans
+
+    dev:cluster:start:
+        desc: Start the development cluster
+        deps: [redis:start]
+        dir: dev
+        cmds:
+            - docker-compose -f cluster.docker-compose.yml up --remove-orphans
