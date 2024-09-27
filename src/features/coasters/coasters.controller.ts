@@ -1,6 +1,7 @@
 import {
     Body,
     Controller,
+    Get,
     HttpCode,
     HttpStatus,
     Inject,
@@ -26,11 +27,30 @@ import { CommandBus } from "@nestjs/cqrs"
 import { CreateCoasterCommand } from "./coaster-creation/create-coaster.command"
 import { UpdateCoasterDto } from "./dtos/update-coaster.dto"
 import { ModifyCoasterCommand } from "./coaster-modification/modify-coaster.command"
+import { CoastersListingService } from "./coasters-listing.service"
+import { CoasterDto } from "./dtos/coaster.dto"
 
 @ApiTags("coasters")
 @Controller("coasters")
 export class CoastersController {
-    constructor(@Inject(CommandBus) private readonly commandBus: CommandBus) {}
+    constructor(
+        @Inject(CommandBus) private readonly commandBus: CommandBus,
+        @Inject(CoastersListingService)
+        private readonly coastersListingService: CoastersListingService,
+    ) {}
+
+    @Get()
+    @ApiOperation({
+        summary:
+            "Returns all roller coasters registered in the system among with their wagons",
+    })
+    @ApiOkResponse({
+        description: "List of roller coasters",
+        type: [CoasterDto],
+    })
+    async getAllCoasters(): Promise<CoasterDto[]> {
+        return await this.coastersListingService.getAllCoasters()
+    }
 
     @Post()
     @ApiOperation({

@@ -25,6 +25,10 @@ export class CoastersRepository {
         private readonly dbContext: CoastersDbContext,
     ) {}
 
+    async findAll() {
+        return this.dbContext.get()
+    }
+
     async create(info: CreateCoasterDto): Promise<CoasterEntity> {
         const existingCoasters = await this.dbContext.read()
 
