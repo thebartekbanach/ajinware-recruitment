@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiPropertyOptional } from "@nestjs/swagger"
 import { IsNumber, IsOptional, IsPositive } from "class-validator"
 import { IsTimeString } from "src/common/validators/is-time.validator"
 
@@ -6,7 +6,7 @@ export class UpdateCoasterDto {
     @IsOptional()
     @IsNumber()
     @IsPositive()
-    @ApiProperty({
+    @ApiPropertyOptional({
         type: Number,
         example: 5,
         description: "Number of personnel that can operate the coaster",
@@ -17,7 +17,7 @@ export class UpdateCoasterDto {
     @IsOptional()
     @IsNumber()
     @IsPositive()
-    @ApiProperty({
+    @ApiPropertyOptional({
         type: Number,
         example: 600,
         description: "Number of clients that will ride the coaster daily",
@@ -27,7 +27,7 @@ export class UpdateCoasterDto {
 
     @IsOptional()
     @IsTimeString()
-    @ApiProperty({
+    @ApiPropertyOptional({
         type: String,
         example: "09:00",
         description: "Hour when the coaster track opens",
@@ -36,7 +36,7 @@ export class UpdateCoasterDto {
 
     @IsOptional()
     @IsTimeString()
-    @ApiProperty({
+    @ApiPropertyOptional({
         type: String,
         example: "20:00",
         description: "Hour when the coaster track closes",
