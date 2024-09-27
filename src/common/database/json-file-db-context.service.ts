@@ -1,7 +1,10 @@
 import { readFile, writeFile, stat, access, constants } from "fs/promises"
 
 export abstract class JsonFileDbContextService<TEntity> {
-    constructor(protected readonly filePath: string) {}
+    constructor(
+        protected readonly filePath: string,
+        private readonly formatDbFile: boolean,
+    ) {}
 
     private async checkDbPathCorrectness() {
         try {
@@ -36,7 +39,10 @@ export abstract class JsonFileDbContextService<TEntity> {
     }
 
     async save(data: TEntity[]): Promise<void> {
-        const fileContents = JSON.stringify(data, null, 2)
+        const fileContents = this.formatDbFile
+            ? JSON.stringify(data, null, 2) // Pretty print with 2 spaces
+            : JSON.stringify(data) // Compact JSON
+
         await writeFile(this.filePath, fileContents)
     }
 }

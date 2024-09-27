@@ -5,8 +5,8 @@ export abstract class CachedJsonFileDbContextService<
 > extends JsonFileDbContextService<TEntity> {
     private static cache: Record<string, unknown> = {}
 
-    constructor(filePath: string) {
-        super(filePath)
+    constructor(filePath: string, formatDbFile: boolean) {
+        super(filePath, formatDbFile)
     }
 
     /**
