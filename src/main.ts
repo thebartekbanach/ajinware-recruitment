@@ -5,6 +5,7 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { INestApplication, ValidationPipe } from "@nestjs/common"
 import { EnvConfig } from "./config/env"
 import { createWinstonLogger } from "./common/logger/create-logger"
+import { MicroserviceOptions, Transport } from "@nestjs/microservices"
 
 function setupSwagger(app: INestApplication) {
     const { environment } = app.get(EnvConfig)
@@ -34,9 +35,22 @@ async function bootstrap() {
         // so we need to construct and pass it manually
         logger: createWinstonLogger(),
     })
+
+    if (process.env.OFFLINE_MODE !== "true") {
+        app.connectMicroservice<MicroserviceOptions>({
+            transport: Transport.REDIS,
+            options: {
+                host: process.env.REDIS_HOST,
+                port: Number(process.env.REDIS_PORT),
+            },
+        })
+    }
+
     setupSwagger(app)
     app.useGlobalPipes(new ValidationPipe())
     const { port } = app.get(ApiConfig)
+
+    await app.startAllMicroservices()
     await app.listen(port)
 }
 bootstrap()
