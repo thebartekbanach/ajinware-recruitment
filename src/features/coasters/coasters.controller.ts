@@ -80,8 +80,7 @@ export class CoastersController {
     })
     @ApiBody({
         type: UpdateCoasterDto,
-        description:
-            "Roller coaster data to update, provide one or more fields to update, every field is optional",
+        description: "Roller coaster data to update",
     })
     @ApiParam({
         name: "coasterId",
