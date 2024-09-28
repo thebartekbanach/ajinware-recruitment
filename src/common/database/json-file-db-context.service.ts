@@ -1,4 +1,4 @@
-import { readFile, writeFile, stat, access, constants } from "fs/promises"
+import { readFile, writeFile, access, constants } from "fs/promises"
 
 export abstract class JsonFileDbContextService<TEntity> {
     constructor(
@@ -6,12 +6,26 @@ export abstract class JsonFileDbContextService<TEntity> {
         private readonly formatDbFile: boolean,
     ) {}
 
+    private async initializeDbFile() {
+        try {
+            await writeFile(this.filePath, "[]")
+        } catch (error) {
+            throw new Error(
+                `Cannot initialize the database file (${this.filePath}): ${error.message}`,
+            )
+        }
+    }
+
     private async checkDbPathCorrectness() {
         try {
             await access(this.filePath, constants.W_OK)
-            const info = await stat(this.filePath)
-            return info.isFile()
+            return true
         } catch (error) {
+            if (error.code === "ENOENT") {
+                await this.initializeDbFile()
+                return true
+            }
+
             throw new Error(
                 `Cannot write to the database file (${this.filePath}): ${error.message}`,
             )
