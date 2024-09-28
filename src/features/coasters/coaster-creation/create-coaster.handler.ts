@@ -4,7 +4,7 @@ import { Inject } from "@nestjs/common"
 import { CoastersRepository } from "src/database/coasters.repository"
 
 @CommandHandler(CreateCoasterCommand)
-export class CreateCoasterInDbCommandHandler
+export class CreateCoasterCommandHandler
     implements IInferredCommandHandler<CreateCoasterCommand>
 {
     constructor(
