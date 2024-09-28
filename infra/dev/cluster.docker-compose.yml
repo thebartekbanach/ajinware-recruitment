@@ -41,6 +41,7 @@ services:
             - REDIS_PORT=6379
             - NODE_NAME=Coasters.Cluster.Node-2
             - NODE_BASE_URL=http://localhost:3051
+            - PORT=3051
             - LOGS_DIRECTORY=/app/data/dev/cluster/node-2/logs/
             - COASTERS_DATABASE_PATH=/app/data/dev/cluster/node-2/coasters.db.json
 
