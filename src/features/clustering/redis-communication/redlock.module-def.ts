@@ -1,17 +1,13 @@
 import { RedlockModule } from "@anchan828/nest-redlock"
 import { Redis } from "ioredis"
-import { ClusteringConfig } from "src/config/clustering"
+import { LazyRedisClientModule } from "./lazy-redis-client.module"
+import { LAZY_REDIS_CLIENT } from "./di.constants"
 
 export const RedlockModuleDef = RedlockModule.registerAsync({
-    inject: [ClusteringConfig],
-    useFactory: (config: ClusteringConfig) => ({
-        clients: [
-            new Redis({
-                host: config.redis?.host ?? "OFFLINE_MODE",
-                port: config.redis?.port ?? 0,
-                lazyConnect: true, // necessary for offline mode
-            }),
-        ],
+    imports: [LazyRedisClientModule],
+    inject: [LAZY_REDIS_CLIENT],
+    useFactory: (client: Redis) => ({
+        clients: [client],
         // https://github.com/mike-marcacci/node-redlock#configuration
         settings: {
             driftFactor: 0.01,

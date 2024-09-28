@@ -28,6 +28,11 @@ services:
         ports:
             - 3050:3050 # http api
             - 9229:9229 # nodejs debugger
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
 
     node-2:
         <<: *node
@@ -44,6 +49,11 @@ services:
             - PORT=3051
             - LOGS_DIRECTORY=/app/data/dev/cluster/node-2/logs/
             - COASTERS_DATABASE_PATH=/app/data/dev/cluster/node-2/coasters.db.json
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3051/health"]
+            interval: 30s
+            timeout: 10s
+            retries: 5
 
 networks:
     coasters-backend-services:
