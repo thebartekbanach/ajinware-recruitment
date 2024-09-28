@@ -9,10 +9,9 @@ function inLogsDirectory(fileName: string) {
     return process.env.LOGS_DIRECTORY + fileName
 }
 
-export function createWinstonLogger() {
-    return WinstonModule.createLogger({
-        level:
-            process.env.NODE_ENV === Environment.Production ? "warn" : "info",
+export function createWinstonModuleConfig(isProduction: boolean) {
+    return {
+        level: isProduction ? "warn" : "info",
 
         transports: [
             new winston.transports.Console({
@@ -45,5 +44,13 @@ export function createWinstonLogger() {
                 format: winston.format.json(),
             }),
         ],
-    })
+    }
+}
+
+export function createWinstonLogger() {
+    return WinstonModule.createLogger(
+        createWinstonModuleConfig(
+            process.env.NODE_ENV === Environment.Production,
+        ),
+    )
 }
