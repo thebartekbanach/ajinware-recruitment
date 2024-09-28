@@ -75,5 +75,14 @@ export class LeaderElectionService {
         }
 
         this.leaderLock = await this.leaderLock.extend(2000)
+
+        // in case new nodes joined the cluster while we were extending the lock
+        // we need to emit the event again, as those nodes might not known about the leader yet
+
+        const event = new LeaderChangedEvent(
+            this.clusteringConfig.node.name,
+            this.clusteringConfig.node.baseUrl,
+        )
+        this.redisClient.emit(CLUSTER_LEADER_CHANGED_TOPIC, event.toJSON())
     }
 }

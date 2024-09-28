@@ -105,4 +105,8 @@ export class CoastersRepository {
         await this.dbContext.save(existingCoasters)
         return coaster
     }
+
+    async dropDatabase() {
+        await this.dbContext.save([])
+    }
 }
