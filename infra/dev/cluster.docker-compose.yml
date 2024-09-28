@@ -34,7 +34,7 @@ services:
         container_name: Dev.Coasters.Cluster.Node-2
         ports:
             - 3051:3051 # http api
-            - 9230:9230 # nodejs debugger
+            - 9230:9229 # nodejs debugger
         environment:
             - NODE_ENV=development
             - REDIS_HOST=Shared.Coasters.Redis
