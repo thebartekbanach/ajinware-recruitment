@@ -2,7 +2,14 @@ import { Controller, Get, Inject } from "@nestjs/common"
 import { HealthCheckService } from "@nestjs/terminus"
 import { DatabaseHealthIndicator } from "./database.health"
 import { RedisHealthIndicator } from "./redis.health"
+import {
+    ApiOkResponse,
+    ApiOperation,
+    ApiServiceUnavailableResponse,
+    ApiTags,
+} from "@nestjs/swagger"
 
+@ApiTags("health")
 @Controller("health")
 export class HealthController {
     constructor(
@@ -15,6 +22,16 @@ export class HealthController {
     ) {}
 
     @Get()
+    @ApiOperation({
+        summary:
+            "Returns health status of the application, including database synchronization and Redis connection",
+    })
+    @ApiOkResponse({
+        description: "Service is healthy",
+    })
+    @ApiServiceUnavailableResponse({
+        description: "Service is unhealthy",
+    })
     check() {
         return this.healthCheckService.check([
             async () => this.databaseHealthIndicator.isSynchronized(),
