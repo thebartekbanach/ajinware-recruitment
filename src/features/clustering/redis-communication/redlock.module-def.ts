@@ -9,6 +9,7 @@ export const RedlockModuleDef = RedlockModule.registerAsync({
             new Redis({
                 host: config.redis?.host ?? "OFFLINE_MODE",
                 port: config.redis?.port ?? 0,
+                lazyConnect: true, // necessary for offline mode
             }),
         ],
         // https://github.com/mike-marcacci/node-redlock#configuration

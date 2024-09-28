@@ -13,6 +13,7 @@ export const RedisClientModuleDef = ClientsModule.registerAsync({
                 options: {
                     host: config.redis?.host ?? "OFFLINE_MODE",
                     port: config.redis?.port ?? 0,
+                    lazyConnect: true, // necessary for offline mode
                 },
             }),
         },
