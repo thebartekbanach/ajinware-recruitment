@@ -50,6 +50,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe())
     const { port } = app.get(ApiConfig)
 
+    app.enableCors()
     await app.startAllMicroservices()
     await app.listen(port)
 }

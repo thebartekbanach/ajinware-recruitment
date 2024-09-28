@@ -20,6 +20,7 @@ import {
     ApiOkResponse,
     ApiOperation,
     ApiParam,
+    ApiServiceUnavailableResponse,
     ApiTags,
 } from "@nestjs/swagger"
 import { CreateCoasterDto } from "./dtos/create-coaster.dto"
@@ -29,6 +30,8 @@ import { UpdateCoasterDto } from "./dtos/update-coaster.dto"
 import { ModifyCoasterCommand } from "./coaster-modification/modify-coaster.command"
 import { CoastersListingService } from "./coasters-listing.service"
 import { CoasterDto } from "./dtos/coaster.dto"
+import { RedirectToLeader } from "../clustering/leader-election/redirect-to-leader.interceptor"
+import { CurrentLeaderService } from "../clustering/leader-election/current-leader.service"
 
 @ApiTags("coasters")
 @Controller("coasters")
@@ -37,6 +40,8 @@ export class CoastersController {
         @Inject(CommandBus) private readonly commandBus: CommandBus,
         @Inject(CoastersListingService)
         private readonly coastersListingService: CoastersListingService,
+        @Inject(CurrentLeaderService)
+        private readonly currentLeaderService: CurrentLeaderService,
     ) {}
 
     @Get()
@@ -53,6 +58,7 @@ export class CoastersController {
     }
 
     @Post()
+    @RedirectToLeader()
     @ApiOperation({
         summary: "Adds new roller coaster to the system",
     })
@@ -65,16 +71,28 @@ export class CoastersController {
     @ApiBadRequestResponse({
         description: "Invalid roller coaster data provided",
     })
-    @HttpCode(HttpStatus.CREATED) // TODO: return accepted in case of multiple nodes
-    async createCoaster(@Body() coaster: CreateCoasterDto): Promise<string> {
+    @ApiServiceUnavailableResponse({
+        description: "The leader has not been elected yet",
+    })
+    @HttpCode(HttpStatus.CREATED)
+    async createCoaster(
+        @Body() coaster: CreateCoasterDto,
+        @Res() response: Response,
+    ): Promise<void> {
         const createdCoasterId = await this.commandBus.execute(
             new CreateCoasterCommand(coaster),
         )
 
-        return createdCoasterId
+        if (this.currentLeaderService.clusteringModeActive) {
+            response.status(HttpStatus.ACCEPTED).send(createdCoasterId)
+            return
+        }
+
+        response.status(HttpStatus.CREATED).send(createdCoasterId)
     }
 
     @Put("/:coasterId")
+    @RedirectToLeader()
     @ApiOperation({
         summary: "Updates roller coaster in the system",
     })
@@ -100,6 +118,9 @@ export class CoastersController {
     @ApiBadRequestResponse({
         description: "Invalid roller coaster data provided",
     })
+    @ApiServiceUnavailableResponse({
+        description: "The leader has not been elected yet",
+    })
     async updateCoaster(
         @Param("coasterId") coasterId: string,
         @Body() coaster: UpdateCoasterDto,
@@ -122,7 +143,10 @@ export class CoastersController {
             return
         }
 
-        // TODO: return accepted in case of multiple nodes
+        if (this.currentLeaderService.clusteringModeActive) {
+            res.status(HttpStatus.ACCEPTED).send()
+            return
+        }
 
         res.status(HttpStatus.OK).send()
     }
