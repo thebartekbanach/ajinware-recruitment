@@ -26,11 +26,11 @@ export class CoastersRepository {
     ) {}
 
     async findAll() {
-        return this.dbContext.get()
+        return this.dbContext.read()
     }
 
     async findById(id: string): Promise<Readonly<CoasterEntity> | null> {
-        const coasters = await this.dbContext.get()
+        const coasters = await this.dbContext.read()
         return coasters.find((c) => c.id === id) || null
     }
 
