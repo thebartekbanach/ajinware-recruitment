@@ -17,11 +17,11 @@ tasks:
         desc: Start the development offline server
         dir: dev
         cmds:
-            - docker-compose -f offline.docker-compose.yml up --remove-orphans
+            - docker-compose -f offline.docker-compose.yml up --remove-orphans --build
 
     dev:cluster:start:
         desc: Start the development cluster
         deps: [redis:start]
         dir: dev
         cmds:
-            - docker-compose -f cluster.docker-compose.yml up --remove-orphans
+            - docker-compose -f cluster.docker-compose.yml up --remove-orphans --build
