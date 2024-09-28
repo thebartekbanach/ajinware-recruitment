@@ -29,6 +29,11 @@ export class CoastersRepository {
         return this.dbContext.get()
     }
 
+    async findById(id: string): Promise<Readonly<CoasterEntity> | null> {
+        const coasters = await this.dbContext.get()
+        return coasters.find((c) => c.id === id) || null
+    }
+
     async create(info: CreateCoasterDto): Promise<CoasterEntity> {
         const existingCoasters = await this.dbContext.read()
 
@@ -79,5 +84,25 @@ export class CoastersRepository {
 
         await this.dbContext.save(existingCoasters)
         return coasterToUpdate
+    }
+
+    async createOrUpdate(coaster: CoasterEntity): Promise<CoasterEntity> {
+        const existingCoasters = await this.dbContext.read()
+        const coasterToUpdate = existingCoasters.find(
+            (c) => c.id === coaster.id,
+        )
+
+        if (coasterToUpdate) {
+            coasterToUpdate.numberOfPersonnel = coaster.numberOfPersonnel
+            coasterToUpdate.numberOfClientsDaily = coaster.numberOfClientsDaily
+            coasterToUpdate.trackLength = coaster.trackLength
+            coasterToUpdate.openHours = coaster.openHours
+            coasterToUpdate.wagons = coaster.wagons
+        } else {
+            existingCoasters.push(coaster)
+        }
+
+        await this.dbContext.save(existingCoasters)
+        return coaster
     }
 }
