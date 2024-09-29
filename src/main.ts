@@ -6,6 +6,7 @@ import { INestApplication, ValidationPipe } from "@nestjs/common"
 import { EnvConfig } from "./config/env"
 import { createWinstonLogger } from "./common/logger/create-logger"
 import { MicroserviceOptions, Transport } from "@nestjs/microservices"
+import { WsAdapter } from "@nestjs/platform-ws"
 
 function setupSwagger(app: INestApplication) {
     const { environment } = app.get(EnvConfig)
@@ -22,6 +23,8 @@ function setupSwagger(app: INestApplication) {
         .addServer(`http://localhost:${port}`, "Development API")
         .addTag("coasters", "Coasters management API")
         .addTag("wagons", "Wagons management API")
+        .addTag("health", "Microservice health API")
+        .addTag("statistics", "Coasters statistics API")
         .build()
 
     const document = SwaggerModule.createDocument(app, config)
@@ -47,10 +50,12 @@ async function bootstrap() {
     }
 
     setupSwagger(app)
-    app.useGlobalPipes(new ValidationPipe())
-    const { port } = app.get(ApiConfig)
 
     app.enableCors()
+    app.useGlobalPipes(new ValidationPipe())
+    app.useWebSocketAdapter(new WsAdapter(app))
+
+    const { port } = app.get(ApiConfig)
     await app.startAllMicroservices()
     await app.listen(port)
 }
