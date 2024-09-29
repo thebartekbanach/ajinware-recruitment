@@ -5,6 +5,7 @@ export interface CoasterEntity {
     numberOfPersonnel: number
     numberOfClientsDaily: number
     trackLength: number
+    wagonSpeed: number
     openHours: {
         from: string
         to: string

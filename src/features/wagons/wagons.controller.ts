@@ -55,7 +55,6 @@ export class WagonsController {
             new CreateWagonCommand({
                 coasterId,
                 numberOfSeats: wagonToAdd.numberOfSeats,
-                wagonSpeed: wagonToAdd.wagonSpeed,
             }),
         )
 

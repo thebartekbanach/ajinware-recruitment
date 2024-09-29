@@ -4,7 +4,6 @@ import { CoastersDbContext } from "./contexts/coasters-db-context.service"
 interface CreateWagonDto {
     coasterId: string
     numberOfSeats: number
-    wagonSpeed: number
 }
 
 interface RemoveWagonDto {
@@ -32,7 +31,6 @@ export class WagonsRepository {
         coaster.wagons.push({
             id: `W${coaster.wagons.length + 1}`,
             numberOfSeats: data.numberOfSeats,
-            wagonSpeed: data.wagonSpeed,
         })
 
         await this.dbContext.save(existingCoasters)

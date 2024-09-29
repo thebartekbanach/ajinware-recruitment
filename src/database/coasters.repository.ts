@@ -6,6 +6,7 @@ interface CreateCoasterDto {
     numberOfPersonnel: number
     numberOfClientsDaily: number
     trackLength: number
+    wagonSpeed: number
     openHour: string
     closeHour: string
 }
@@ -43,6 +44,7 @@ export class CoastersRepository {
             numberOfPersonnel: info.numberOfPersonnel,
             numberOfClientsDaily: info.numberOfClientsDaily,
             trackLength: info.trackLength,
+            wagonSpeed: info.wagonSpeed,
             openHours: {
                 from: info.openHour,
                 to: info.closeHour,

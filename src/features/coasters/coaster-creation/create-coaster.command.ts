@@ -4,6 +4,7 @@ export class CreateCoasterCommand extends Command<string> {
     numberOfPersonnel: number
     numberOfClientsDaily: number
     trackLength: number
+    wagonSpeed: number
     openHour: string
     closeHour: string
 
@@ -11,6 +12,7 @@ export class CreateCoasterCommand extends Command<string> {
         numberOfPersonnel: number
         numberOfClientsDaily: number
         trackLength: number
+        wagonSpeed: number
         openHour: string
         closeHour: string
     }) {

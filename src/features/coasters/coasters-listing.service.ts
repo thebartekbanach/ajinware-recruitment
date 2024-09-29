@@ -17,12 +17,12 @@ export class CoastersListingService {
             numberOfPersonnel: coaster.numberOfPersonnel,
             numberOfClientsDaily: coaster.numberOfClientsDaily,
             trackLength: coaster.trackLength,
+            wagonSpeed: coaster.wagonSpeed,
             openHour: coaster.openHours.from,
             closeHour: coaster.openHours.to,
             wagons: coaster.wagons.map((wagon) => ({
                 id: wagon.id,
                 numberOfSeats: wagon.numberOfSeats,
-                wagonSpeed: wagon.wagonSpeed,
             })),
         }))
     }

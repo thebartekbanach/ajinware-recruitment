@@ -11,13 +11,4 @@ export class CreateWagonDto {
         minimum: 1,
     })
     numberOfSeats: number
-
-    @IsNumber()
-    @IsPositive()
-    @ApiProperty({
-        type: Number,
-        example: 1.2,
-        description: "Speed of wagon in m/s",
-    })
-    wagonSpeed: number
 }

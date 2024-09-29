@@ -34,6 +34,13 @@ export class CoasterDto {
     trackLength: number
 
     @ApiProperty({
+        type: Number,
+        example: 1.2,
+        description: "Speed of single wagon on coaster in m/s",
+    })
+    wagonSpeed: number
+
+    @ApiProperty({
         type: String,
         example: "09:00",
         description: "Hour when the coaster track opens",
@@ -49,7 +56,7 @@ export class CoasterDto {
 
     @ApiProperty({
         type: [WagonDto],
-        example: [{ id: "W69", numberOfSeats: 42, wagonSpeed: 3 }],
+        example: [{ id: "W69", numberOfSeats: 42 }],
         description: "List of wagons that are running over the coaster",
     })
     wagons: WagonDto[]

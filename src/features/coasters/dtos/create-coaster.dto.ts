@@ -33,6 +33,15 @@ export class CreateCoasterDto {
     })
     trackLength: number
 
+    @IsNumber()
+    @IsPositive()
+    @ApiProperty({
+        type: Number,
+        example: 1.2,
+        description: "Speed of single wagon on coaster in m/s",
+    })
+    wagonSpeed: number
+
     @IsTimeString()
     @ApiProperty({
         type: String,

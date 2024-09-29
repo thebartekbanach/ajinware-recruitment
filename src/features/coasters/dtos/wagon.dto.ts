@@ -16,12 +16,4 @@ export class WagonDto {
         minimum: 1,
     })
     numberOfSeats: number
-
-    @ApiProperty({
-        type: Number,
-        example: 20,
-        description: "Speed of the wagon in m/s",
-        minimum: 1,
-    })
-    wagonSpeed: number
 }

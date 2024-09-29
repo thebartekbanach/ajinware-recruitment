@@ -32,7 +32,6 @@ export class CreateWagonCommandHandler
         const wagonAdded = await this.coasterWagons.addWagon({
             coasterId: command.coasterId,
             numberOfSeats: command.numberOfSeats,
-            wagonSpeed: command.wagonSpeed,
         })
 
         if (!wagonAdded) {
