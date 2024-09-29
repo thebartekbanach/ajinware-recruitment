@@ -35,10 +35,9 @@ export class RedirectToLeaderInterceptor implements NestInterceptor {
         }
 
         if (!this.currentLeaderService.isCurrentNodeLeader) {
-            const leaderUrl = new URL(
-                response.req.originalUrl,
-                this.currentLeaderService.currentLeaderPublicUrl,
-            )
+            const leaderUrl =
+                this.currentLeaderService.currentLeaderPublicUrl +
+                response.req.originalUrl
 
             response.redirect(
                 HttpStatus.TEMPORARY_REDIRECT,

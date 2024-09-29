@@ -1,7 +1,13 @@
-import { Injectable } from "@nestjs/common"
+import { Inject, Injectable } from "@nestjs/common"
+import { ClusteringConfig } from "src/config/clustering"
 
 @Injectable()
 export class StatisticsConsoleServeService {
+    constructor(
+        @Inject(ClusteringConfig)
+        private readonly clusteringConfig: ClusteringConfig,
+    ) {}
+
     serveStatisticsPage() {
         return `
 <!-- PLEASE NOTE THAT THIS FILE HAS BEEN HAND WRITTEN ONLY FOR THE PURPOSE OF THIS RECRUITMENT TASK -->
@@ -20,9 +26,8 @@ export class StatisticsConsoleServeService {
     <code id="statistics">No data yet</code>
 
     <script>
-        const protocol = "ws://"
-        const domain = window.location.hostname + (window.location.port ? ':' + window.location.port : '')
-        const path = "/statistics/live"
+        const host = window.location.host
+        const wsUrl = "ws://" + window.location.host + "${this.clusteringConfig.node.baseUrl}/statistics/live"
 
         const statisticsData = []
         const statisticsElement = document.getElementById("statistics")
@@ -78,7 +83,7 @@ export class StatisticsConsoleServeService {
         }
 
         const loadInitialData = () => {
-            fetch("/statistics/latest")
+            fetch(window.location.origin + "${this.clusteringConfig.node.baseUrl}/statistics/latest")
                 .then((response) => response.json())
                 .then((data) => {
                     statisticsData.push(...data)
@@ -87,7 +92,7 @@ export class StatisticsConsoleServeService {
         }
 
         const connectToLiveWebsocket = () => {
-            const ws = new WebSocket(protocol + domain + path)
+            const ws = new WebSocket(wsUrl)
             ws.onmessage = addOrReplaceStatistic
             ws.onclose = () => alert("Connection to statistics server closed, please refresh the page")
         }
