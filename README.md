@@ -1,5 +1,28 @@
 # Rekrutacja Ajinware - System Kolejek Górskich
 
+- [Rekrutacja Ajinware - System Kolejek Górskich](#rekrutacja-ajinware-system-kolejek-g-rskich)
+  * [Moja interpretacja zadania rekrutacyjnego](#moja-interpretacja-zadania-rekrutacyjnego)
+    + [System](#system)
+    + [Replikacja](#replikacja)
+    + [Środowisko pracy](#srodowisko-pracy)
+    + [Logika biznesowa](#logika-biznesowa)
+  * [Wybór technologii](#wybor-technologii)
+    + [Najważniejsze pytanie: dlaczego wybrałem **NestJS**?](#najwazniejsze-pytanie-dlaczego-wybralem-nestjs)
+    + [CQRS](#cqrs)
+    + [Devcontainer](#devcontainer)
+  * [Środowisko deweloperskie](#srodowisko-deweloperskie)
+    + [Pierwsze kroki](#pierwsze-kroki)
+    + [Struktura folderów](#struktura-folderow)
+    + [Konfiguracja VSCode](#konfiguracja-vscode)
+    + [Projekt uruchomiony, co dalej?](#projekt-uruchomiony-co-dalej)
+      - [Github Codespaces](#uzywajac-github-codespaces--musimy-uzyc-zakladki--porty-zeby-dowiedziec-sie-pod-jakim-adresem-nasz-port-zostal-wystawiony)
+  * [Struktura backendu](#struktura-backendu)
+  * [Checklista z zadania rekrutacyjnego](#checklista-z-zadania-rekrutacyjnego)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
+## Wprowadzenie
+
 To repozytorium zawiera rozwiązanie zadania rekrutacyjnego na stanowisko Backend Developer w firmie Ajinware.
 
 Możliwe, że trochę przesadziłem z tym rozwiązaniem, ale chciałem pokazać, że potrafię zrobić coś więcej niż tylko zaimplementować API.
