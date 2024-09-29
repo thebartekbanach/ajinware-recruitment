@@ -7,6 +7,7 @@ import { ClientProxy } from "@nestjs/microservices"
 import { REDIS_CLIENT_PROXY } from "../redis-communication/di.constants"
 import { LeaderChangedEvent } from "./leader-changed.event"
 import { CLUSTER_LEADER_CHANGED_TOPIC } from "./constants"
+import { EnvConfig } from "src/config/env"
 
 @Injectable()
 export class LeaderElectionService {
@@ -19,6 +20,7 @@ export class LeaderElectionService {
         @Inject(RedlockService) private readonly redlock: RedlockService,
         @Inject(REDIS_CLIENT_PROXY) private readonly redisClient: ClientProxy,
         @Inject(EventBus) private readonly eventBus: EventBus,
+        @Inject(EnvConfig) private readonly envConfig: EnvConfig,
     ) {}
 
     async tryToWinElection() {
@@ -41,7 +43,10 @@ export class LeaderElectionService {
     private async tryToWinElectionSafely() {
         this.tryingToWinElection = true
         try {
-            this.leaderLock = await this.redlock.acquire(["leading-node"], 2000)
+            this.leaderLock = await this.redlock.acquire(
+                [`${this.envConfig.environment}.leading-node`],
+                2000,
+            )
 
             const event = new LeaderChangedEvent(
                 this.clusteringConfig.node.name,
