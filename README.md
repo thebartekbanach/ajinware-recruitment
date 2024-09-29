@@ -1,85 +1,216 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Rekrutacja Ajinware - System Kolejek Górskich
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+To repozytorium zawiera rozwiązanie zadania rekrutacyjnego na stanowisko Backend Developer w firmie Ajinware.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Możliwe, że trochę przesadziłem z tym rozwiązaniem, ale chciałem pokazać, że potrafię zrobić coś więcej niż tylko zaimplementować API.
 
-## Description
+Zanim przejdziemy do opisu rozwiązania, muszę zaznaczyć, że specyfikacja zadania była w wielu miejscach nie jasna, a nawet sprzeczna. W związku z tym, w niektórych miejscach musiałem podjąć decyzje, które mogą być niezgodne z oczekiwaniami. Dlatego pierwszą rzeczą, którą opiszę, będzie moja interpretacja zadania.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Moja interpretacja zadania rekrutacyjnego
 
-## Project setup
+Jeżeli o czymś nie wspomniałem, oznacza to że instrukcje były jasne i starałem się ich trzymać.
 
-```bash
-$ npm install
+### System
+- System ma udostępniać API, które pozwala zarządzać kolejkami górskimi, personelem i wagonikami
+- System ma umożliwiać uruchomienie węzła w trybie offline (bez redisa) jak i online (z redisem)
+- System potrafi pracować w trybie klastra, gdzie jeden węzeł jest liderem a reszta followerami
+- Klaster działa tak, że jeden węzeł zapisuje dane i dba o spójność systemu generując ID w bazie danych a reszta węzłów może służyć za repliki do odczytu danych implementujące strategię `eventual consistency`
+
+### Replikacja
+- Operacje modyfikujące bazę danych mają być przeprowadzane z węzła lidera, a węzły-followery mają uniemożliwiać w jakiś sposób swojego api do modyfikacji bazy danych (dodawania i edycji kolejek oraz wagoników)
+- Każdy węzeł ma odrębną bazę danych która ma być replikowana z węzła-lidera na węzły-followery
+- Podczas dołączania do klastra, baza danych dołączającego węzła ma być zsynchronizowana z resztą klastra
+- Replikacja dzieje się asynchronicznie i nie blokuje działania aplikacji
+- Węzeł który replikuje swoją bazę danych, nie jest dostępny z zewnątrz (implementacja poprzez healthchecki)
+
+### Środowisko pracy
+- Logi wyświetlane są na konsoli oraz zapisywane do plików logów
+- Poziom logowania różni się w zależności od środowiska (produkcyjnego/deweloperskiego)
+- Produkcja uruchamia się na 3051 a development na 3050
+- Wszystkie usługi danego środowiska dostępne są z danego portu poprzez proxy (żeby udostępnić wiele serwerów pod jednym portem)
+- Systemy produkcyjne jak i deweloperskie nie kolidują ze sobą ani w redisie, ani nie nadpisują sobie logów czy baz danych
+- Niestety, decydując się na użycie devcontainera pozbawiłem się możliwości zablokowania dostępu do środowiska deweloperskiego dla osób z zewnątrz, **JEDNAKŻE** używając devcontainera w Github Codespaces, github pozwala na wybranie czy dany port ma być publiczny, czy prywatny (chroniony credentialsami z naszego githuba)
+
+### Logika biznesowa
+- Każda kolejka ma jedną określoną prędkość wagoników, bo inaczej wagoniki **zderzałyby się ze sobą na trasie** albo musiałyby zwolnić do prędkości najwolniejszego wagonika
+- Statystyki i monitorowanie muszą być zaimplementowane tak, żeby możliwa była obserwacja systemu w czasie rzeczywistym
+- Statystyki i monitorowanie **nie mogą** być zaimplementowane w logach serwera (bo kolidują z resztą logów a i użyteczność żadna)
+- System informuje o brakującej liczbie miejsc dla klientów i pokazuje oczekiwaną ilość, bo wagoniki mają różną liczbę siedzeń a nie jedną statyczną wartość co uniemożliwia pokazanie ilości brakujących wagoników
+
+> Dodam też, że bardziej skupiałem się raczej na technologii niż na przeanalizowaniu działania systemu, bo z tonu zadania zrozumiałem, że to właśnie klastrowanie, wybieranie lidera i synchronizacja są ważnym elementem. W realnym życiu obie te kwestie są bardzo ważne, więc proszę mieć na uwadze, że wiem, że mogłem lepiej przeanalizować część produktową zadania.
+
+## Wybór technologii
+
+### Najważniejsze pytanie: dlaczego wybrałem **NestJS**?
+
+Z doświadczenia wiem, że użycie frameworka jest dobrą praktyką, jako że frameworki rozwiązują część problemów z którymi się stykamy my programiści, jak i również usprawniają komunikację w zespole oferując wspólne API programistyczne. Dodatkową zaletą użycia frameworka jest to, że dobrze użyty upraszcza strukturę rozwiązania, gdzie pisząc własne rozwiązanie od zera cięzko jest zadbać o to żeby struktura była przejrzysta dla programistów.
+
+Mogłem tutaj użyć też express.js czy innego frameworka i zapewniam że potrafię budować rzeczy od zera bez frameworków (stąd moje doświadczenie o którym wspomniałem wyżej) jednak zdecydowałem że łatwiej rekruterowi będzie zrozumieć jak działa kod kiedy po prostu użyję NestJS.
+
+### CQRS
+
+Zdecydowałem się użyć wzorca Command Query Responsibility Segregation do zbudowania archtektury zdarzeniowej wewnątrz aplikacji, która przyjemnie integruje się z rozwiązaniem, jako że przez Redisa przepływają głównie zdarzenia synchronizacyjne klastra.
+
+### Devcontainer
+
+Użyłem tutaj standardu devcontainer, żeby zdefiniować środowisko deweloperskie w formie dockerowego kontenera.
+
+Środowisko ułatwia start z projektem, bo nie trzeba instalować i konfigurować narzędzi na swoim własnym komputerze a dodatkowo pozbywamy się komplikacji w postaci walki z mnogością systemów na których pracują deweloperzy.
+
+Devcontainer posiada rozszerzenie docker-in-docker, więc wewnętrzna instancja dockera jest w pełni odizolowana od dockera-hosta.
+
+## Środowisko deweloperskie
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/thebartekbanach/ajinware-recruitment)
+
+Można użyć przycisku powyżej. Uruchomi on instancję Devcontainera na Github Codespaces, więc nie trzeba nawet klonować repozytorium na własny komputer.
+
+Opcją alternatywną może być sklonowanie repozytorium za pomocą [DevPod'a](https://devpod.sh/), stworzyłem całe rozwiązanie pracując w devcontainerze właśnie za pomocą devpoda.
+
+Projekt powinien też wstać lokalnie bez użycia devcontainera.
+
+### Pierwsze kroki
+
+Pierwsze kroki, po uruchomieniu:
+- `npm i` - instalacja paczek projektu
+- `task infra:cluster:dev:start` - uruchomienie klastra w trybie deweloperskim przy użyciu docker-compose`
+
+Przydatną komendą będzie:
+```shell
+task # lists all available tasks
 ```
 
-## Compile and run the project
+Komendy w `task` pozwalają uruchomić pojedynczy węzeł w trybie offline lub klaster w trybach deweloperskim oraz produkcyjnym.
 
-```bash
-# development
-$ npm run start
+### Struktura folderów
+- `./infra` - zawiera pliki konfiguracyjne docker-compose i inne dla środowisk `dev` oraz `prod`
+- `./src` - pliki źródłowe backedu
 
-# watch mode
-$ npm run start:dev
+### Konfiguracja VSCode
 
-# production mode
-$ npm run start:prod
-```
+Projekt został stworzony przy użyciu Visual Studio Code, więc najlepszym rozwiązaniem będzie użycie tego właśnie edytora.
 
-## Run tests
+Predefiniowane są konfiguracje debugowania, których można użyć kiedy kontenery są uruchomione.
 
-```bash
-# unit tests
-$ npm run test
+### Projekt uruchomiony, co dalej?
 
-# e2e tests
-$ npm run test:e2e
+Zacznijmy od małej instrukcji, jak w tym środowisku używać Swaggera. Zmieniając w prawym górnym rogu wartość selecta `Select a definition` zmieniamy serwer, do którego w środowisku chcemy wykonywać żądania.
 
-# test coverage
-$ npm run test:cov
-```
+Dostępne wartości to:
+- `Offline Node`
+- `Cluster Node-1`
+- `Cluster Node-2`
 
-## Resources
+**Po uruchomieniu klastra i wyborze `Offline Node` (i na odwrót) dostaniemy błąd pobrania schemy Open API. Błąd ten nie uniemożliwia zmiany środoiwska w Swaggerze.**
 
-Check out a few resources that may come in handy when working with NestJS:
+Po uruchomieniu projektu zachęcam do wejścia na dokumentację Swaggera lub *konsolę statystyk*:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- Środowisko dev:
+  - http://localhost:3050/ - dokumentacja api środowiska deweloperskiego
+  - http://localhost:3050/offline/statistics/console - konsola ze statystykami na żywo dla offline node
+  - http://localhost:3050/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 1
+  - http://localhost:3050/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 2
 
-## Support
+- Środowisko prod:
+  - http://localhost:3051/ - dokumentacja api środowiska produkcyjnego
+  - http://localhost:3051/offline/statistics/console - konsola ze statystykami na żywo dla offline node
+  - http://localhost:3051/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 1
+  - http://localhost:3051/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 2
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Znając te linki, można klikać!
 
-## Stay in touch
+#### Używając Github Codespaces, musimy użyć zakładki `PORTY` żeby dowiedzieć się pod jakim adresem nasz port został wystawiony
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+![example](codespace-port-forwarding.png)
 
-## License
+## Struktura backendu
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Backend ma strukturę podzieloną na funkcjonalności (features). Poniżej znajduje się krótki opis z jakich modułów składa się aplikacja:
+
+- `common` - reużywalne części niezwiązane bezpośrednio z problemem biznesowym
+- `config` - moduł konfiguracji aplikacji i jej walidacji, to tutaj parsowane są zmienne środowiskowe
+- `database` - jak sama nazwa wskazuje, obsługa bazy danych JSON
+- `features` - funkcje aplikacji rozwiązujące problemy biznesowe
+  - `coasters` - moduł zarządzania kolejkami, udostępnia proste REST API
+  - `wagons` - zarządzanie wagonikami, tworzenie oraz usuwanie
+  - `statistics` - statystyki, alerty, dashboard prezentujący wszystkie kolejki na żywo
+  - `health` - moduł obsługujący healthchecki, w trybie klastra sprawdza łącznąść redisem i stan replikacji bazy danych
+  - `clustering` - klastrowanie, replikacja bazy danych, elekcja lidera
+    - `redis-communication` - podstawowe, reużywalne klocki do komunikacji z redisem
+    - `leader-election` - moduł implementujący wybór lidera przy użyciu **REDLOCK** oraz ogłaszaniem liderstwa w sieci
+    - `data-sharing` - synchronizacja bazy danych pomiędzy węzłami
+      - `database-rebuild` - odbudowa lokalnej bazy danych po dołączeniu do działającego klastra
+      - `database-sync` - synchronizacja danych w klastrze między liderem a followerami
+
+## Checklista z zadania rekrutacyjnego
+
+Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
+
+- [ ] [Baza danych JSON](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/database/contexts/coasters-db-context.service.ts#L7-L16)
+  - [Optymalizacja odczytu (cache) i zapisu (debounce)](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/common/database/cached-json-file-db-context.service.ts#L3-L45)
+
+- [ ] Rejestracja nowej kolejki góskiej
+  - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L60-L92)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L61)
+
+- [ ] Rejestracja nowego wagonu
+  - [Metoda rejestrująca wagon](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L34-L69)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L35)
+
+- [ ] Usunięcie wagonu
+  - [Metoda usuwająca wagon](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L71-L110)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L72)
+
+- [ ] Zmiana kolejki górskiej
+  - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L94-L152)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L95)
+
+- [ ] Wersja deweloperska
+  - [ ] [Nasłuchuje na porcie 3050](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/proxy.docker-compose.yml#L5-L6)
+  - [ ] [Poziom logowania `info`](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L14)
+  - [ ] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L17-L28)
+  - [ ] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L45)
+
+- [ ] Wersja produkcyjna
+  - [ ] [Nasłuchuje na porcie 3051](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/proxy.docker-compose.yml#L5-L6)
+  - [ ] [Poziom logowania `warn`](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L14)
+  - [ ] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L17-L28)
+  - [ ] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L40) (plik log jest tworzony, ale nic nie jest pisane)
+
+- [ ] Dane nie kolidują między środowiskiem deweloperskim a produkcyjnym
+  - [ ] Baza danych ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L19) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/offline.docker-compose.yml#L16))
+  - [ ] Pliki logów ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L18) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/offline.docker-compose.yml#L15))
+  - [ ] Brak kolidacji w redisie
+    - [Wartość redlock wyboru lidera](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/leader-election/leader-election.service.ts#L46-L49)
+    - [Topic zdarzenia o zmianie lidera](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/constants.ts#L1-L6)
+    - [Topiki replikacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/data-sharing/database-rebuild/constants.ts#L5-L12)
+    - [Topiki synchronizacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/data-sharing/database-sync/constants.ts#L5)
+
+- [ ] Statysyki i monitorowanie
+  - [Obliczanie statystyk dla kolejek](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/coaster-statistics.service.ts#L1-L70)
+  - [Frontend pokazujący ostrzeżenia oraz statystyki](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/statistics-console-serve.service.ts#L23-L102)
+  - Frontend statystyk kolejek górskich pobiera aktualną listę statystyk o kolejkach i za pomocą [linku **websocketowego**](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/statistics.gateway.ts#L8-L37) aktualizuje dane na żywo
+  - [ ] Każdy wagon musi wrócić przed końcem czasu działania kolejki górskiej
+  - [ ] Wagony potrzebują 5 minut przerwy, zanim ponownie będą mogły działać po skończonej trasie
+  - [ ] Do obsługi każdej kolejki górskiej wymagany jest 1 pracownik
+  - [ ] Do obsługi każdego wagonu dodatkowo potrzeba 2 osób
+  - [ ] Raportowanie brakującej liczby pracowników
+  - [ ] Raportowanie nadmiarowych pracowników
+
+- [ ] Rozproszony system zarządzania
+  - [ ] Każdy węzeł może działać autonomicznie (patrz [*tryb offline*](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L20))
+  - [ ] System wybiera węzeł-lidera w sieci i rozgłasza go do wszystkich węzłów
+    - [Konfiguracja przykładowej sieci w docker-compose](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/cluster.docker-compose.yml#L1-L72)
+    - [Moduł rozgrywający wybory na lidera klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.service.ts#L11-L88)
+    - [Cron wywołujący próbę przejęcia władzy w klastrze](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.controller.ts#L19-L22)
+    - [Każdy nowy węzeł w sieci szybko dowiaduje się kto jest liderem](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.service.ts#L79-L86)
+    - [Obsługa zdarzenia o nowym liderze klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.controller.ts#L24-L30)
+  - [ ] Po usunięciu węzła-lidera z sieci, sieć wybiera nowego lidera
+  - [ ] [Po dołączeniu do sieci następuje replikacja bazy danych nowego węzła z siecią](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/data-sharing/database-rebuild/leader-initialized.handler.ts#L8-L35)
+  - [ ] [Gdy węzeł jest w sieci, wszystkie nowe zmiany bazy danych są synchronizowane pomiędzy węzłami](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/data-sharing/database-sync/coaster-updated.handler.ts#L9-L44)
+  - [ ] [Synchronizacja danych między węzłami działa asynchronicznie](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/data-sharing/database-sync/coaster-updated.handler.ts#L9) (w NestJS/CQRS eventy są asynchroniczne, fire and forget)
+  - [ ] Zmiany wprowadzane są w lokalnej bazie danych natychmiast, synchronizacja dzieje się w tle
+    - [Tworzenie kolejek górskich](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coaster-creation/create-coaster.handler.ts#L23-L27)
+    - [Modyfikacja kolejek górskich](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coaster-modification/modify-coaster.handler.ts#L37-L44)
+    - [Tworzenie wagoników](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons-creation/create-wagon.handler.ts#L40-L52)
+    - [Usuwanie wagoników](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons-deletion/delete-wagon.handler.ts#L32-L52)
