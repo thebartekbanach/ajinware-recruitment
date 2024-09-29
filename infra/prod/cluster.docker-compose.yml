@@ -1,0 +1,70 @@
+x-templates:
+    backend: &node
+        image: coasters/backend
+        build:
+            context: ../../
+            dockerfile: Dockerfile
+            target: prod
+        tty: true # helps to preserve colors in the console
+        volumes:
+            - ../../data/:/app/data # mount the data directory
+        networks:
+            - coasters-backend-services
+
+services:
+    prod-cluster-node-1:
+        <<: *node
+        container_name: Prod.Coasters.Cluster.Node-1
+        environment:
+            - NODE_ENV=production
+            - REDIS_HOST=Shared.Coasters.Redis
+            - REDIS_PORT=6379
+            - NODE_NAME=Coasters.Cluster.Node-1
+            - NODE_BASE_URL=/cluster/node-1
+            - PORT=3050
+            - LOGS_DIRECTORY=/app/data/prod/cluster/node-1/logs/
+            - COASTERS_DATABASE_PATH=/app/data/prod/cluster/node-1/coasters.db.json
+        ports:
+            - 9229:9229 # nodejs debugger
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
+            interval: 5s
+            timeout: 10s
+            retries: 5
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.prod-cluster-node-1.rule=PathPrefix(`/cluster/node-1`)
+            - traefik.http.middlewares.prod-cluster-node-1-strip.stripprefix.prefixes=/cluster/node-1
+            - traefik.http.routers.prod-cluster-node-1.middlewares=prod-cluster-node-1-strip
+            - traefik.http.services.prod-cluster-node-1.loadbalancer.server.port=3050
+
+    prod-cluster-node-2:
+        <<: *node
+        container_name: Prod.Coasters.Cluster.Node-2
+        environment:
+            - NODE_ENV=production
+            - REDIS_HOST=Shared.Coasters.Redis
+            - REDIS_PORT=6379
+            - NODE_NAME=Coasters.Cluster.Node-2
+            - NODE_BASE_URL=/cluster/node-2
+            - PORT=3050
+            - LOGS_DIRECTORY=/app/data/prod/cluster/node-2/logs/
+            - COASTERS_DATABASE_PATH=/app/data/prod/cluster/node-2/coasters.db.json
+        ports:
+            - 9230:9229 # nodejs debugger
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
+            interval: 5s
+            timeout: 10s
+            retries: 5
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.prod-cluster-node-2.rule=PathPrefix(`/cluster/node-2`)
+            - traefik.http.middlewares.prod-cluster-node-2-strip.stripprefix.prefixes=/cluster/node-2
+            - traefik.http.routers.prod-cluster-node-2.middlewares=prod-cluster-node-2-strip
+            - traefik.http.services.prod-cluster-node-2.loadbalancer.server.port=3050
+
+networks:
+    coasters-backend-services:
+        name: Shared.Coasters.Backend.Services
+        driver: bridge

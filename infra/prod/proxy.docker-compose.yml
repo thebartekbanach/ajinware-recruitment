@@ -1,9 +1,9 @@
 services:
-    dev-proxy:
-        container_name: Dev.Coasters.Proxy
+    prod-proxy:
+        container_name: Prod.Coasters.Proxy
         image: traefik:2.9.6
         ports:
-            - 3050:80
+            - 3051:80
         networks:
             - coasters-backend-services
         volumes:

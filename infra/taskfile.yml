@@ -13,15 +13,128 @@ tasks:
         cmds:
             - docker-compose -f redis.docker-compose.yml stop
 
-    dev:offline:start:
+    compose:exec:
+        desc: Execute docker-compose commands in given environment directory
+        internal: true
+        requires:
+            vars: [MODE, CMD, ENV]
+        cmds:
+            - cd {{.ENV}} && docker-compose -f proxy.docker-compose.yml -f swagger.docker-compose.yml -f {{.MODE}}.docker-compose.yml {{.CMD}}
+
+    compose:cleanup:
+        desc: Stop and remove all dev and prod containers, except redis
+        cmds:
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: offline
+                  CMD: down
+
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: cluster
+                  CMD: down
+
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: offline
+                  CMD: down
+
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: cluster
+                  CMD: down
+
+    offline:dev:start:
         desc: Start the development offline server
         dir: dev
         cmds:
-            - docker-compose -f proxy.docker-compose.yml -f swagger.docker-compose.yml -f offline.docker-compose.yml up --remove-orphans --build
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: offline
+                  CMD: down
 
-    dev:cluster:start:
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: offline
+                  CMD: up --remove-orphans --build -d
+
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: offline
+                  CMD: logs -f dev-offline
+
+
+    cluster:dev:start:
         desc: Start the development cluster
         deps: [redis:start]
         dir: dev
         cmds:
-            - docker-compose -f proxy.docker-compose.yml -f swagger.docker-compose.yml -f cluster.docker-compose.yml up --remove-orphans --build
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: cluster
+                  CMD: down
+
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: cluster
+                  CMD: up --remove-orphans --build -d
+
+            - task: compose:exec
+              vars:
+                  ENV: dev
+                  MODE: cluster
+                  CMD: logs -f dev-cluster-node-1 dev-cluster-node-2
+
+    offline:prod:start:
+        desc: Start the development offline server
+        dir: prod
+        cmds:
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: offline
+                  CMD: down
+
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: offline
+                  CMD: up --remove-orphans --build -d
+
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: offline
+                  CMD: logs -f prod-offline
+
+    cluster:prod:start:
+        desc: Start the development cluster
+        deps: [redis:start]
+        dir: prod
+        cmds:
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: cluster
+                  CMD: down
+
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: cluster
+                  CMD: up --remove-orphans --build -d
+
+            - task: compose:exec
+              vars:
+                  ENV: prod
+                  MODE: cluster
+                  CMD: logs -f prod-cluster-node-1 prod-cluster-node-2

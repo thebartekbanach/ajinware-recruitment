@@ -13,7 +13,7 @@ x-templates:
             - coasters-backend-services
 
 services:
-    node-1:
+    dev-cluster-node-1:
         <<: *node
         container_name: Dev.Coasters.Cluster.Node-1
         environment:
@@ -39,7 +39,7 @@ services:
             - traefik.http.routers.dev-cluster-node-1.middlewares=dev-cluster-node-1-strip
             - traefik.http.services.dev-cluster-node-1.loadbalancer.server.port=3050
 
-    node-2:
+    dev-cluster-node-2:
         <<: *node
         container_name: Dev.Coasters.Cluster.Node-2
         environment:

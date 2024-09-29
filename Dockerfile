@@ -37,11 +37,18 @@ WORKDIR /app
 
 ENV NODE_ENV production
 
+# Install curl for healthcheck
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --chown=node:node package*.json ./
 RUN npm ci
 
 COPY --from=builder --chown=node:node /app/dist ./dist
 
-USER node
+# this is only recruitment task, in normal case we want to run it as non-root user
+# USER node
 
 CMD ["npm", "run", "start:prod"]
