@@ -16,7 +16,7 @@ export class DatabaseReceiverService {
 
     async parseDatabaseRebuildPacket(packet: string) {
         if (packet === DATABASE_REBUILD_DONE_MESSAGE) {
-            this.logger.log("Database rebuild complete")
+            this.logger.warn("Database rebuild complete")
             this.databaseRebuildManager.receivedSynchronizationDoneMessage()
             return
         }

@@ -25,7 +25,7 @@ export class LeaderChangedEventHandler {
         }
 
         if (!this.currentLeaderManager.isLeaderElected) {
-            this.logger.log(
+            this.logger.warn(
                 `Initial leader elected: ${event.leaderNodeName} at ${event.leaderNodePublicUrl}`,
             )
 
@@ -37,7 +37,7 @@ export class LeaderChangedEventHandler {
             )
         }
 
-        this.logger.log(
+        this.logger.warn(
             `Leader changed to ${event.leaderNodeName} at ${event.leaderNodePublicUrl}`,
         )
 

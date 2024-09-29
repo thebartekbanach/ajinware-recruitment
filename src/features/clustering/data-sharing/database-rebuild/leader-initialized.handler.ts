@@ -19,14 +19,16 @@ export class LeaderInitializedEventHandler {
         if (this.clusteringConfig.node.name === event.leaderNodeName) {
             // we are first node in the cluster, we are not rebuilding the database
             // and our database is now the database, that other nodes will rebuild from
-            this.logger.log(
+            this.logger.warn(
                 "This node is first leader in the cluster, no need to rebuild database",
             )
             this.databaseRebuildManager.databaseIsThePrimaryDatabase()
             return
         }
 
-        this.logger.log("Leader initialized, starting database rebuild process")
+        this.logger.warn(
+            "Leader initialized, starting database rebuild process",
+        )
         this.databaseRebuildManager.startRebuildProcess()
     }
 }
