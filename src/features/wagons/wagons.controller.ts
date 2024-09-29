@@ -23,6 +23,7 @@ import { CommandBus } from "@nestjs/cqrs"
 import { CreateWagonCommand } from "./wagons-creation/create-wagon.command"
 import { Response } from "express"
 import { DeleteWagonCommand } from "./wagons-deletion/delete-wagon.command"
+import { RedirectToLeader } from "../clustering/leader-election/redirect-to-leader.interceptor"
 
 @ApiTags("wagons")
 @Controller("coasters/:coasterId/wagons")
@@ -31,6 +32,7 @@ export class WagonsController {
     constructor(@Inject(CommandBus) private readonly commandBus: CommandBus) {}
 
     @Post()
+    @RedirectToLeader()
     @ApiOperation({
         summary: "Adds new wagon to specified roller coaster",
     })
@@ -67,6 +69,7 @@ export class WagonsController {
     }
 
     @Delete("/:wagonId")
+    @RedirectToLeader()
     @ApiOperation({
         summary: "Removes selected wagon from the roller coaster",
     })
