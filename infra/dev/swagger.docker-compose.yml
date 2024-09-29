@@ -1,0 +1,19 @@
+
+services:
+    swagger:
+        image: swaggerapi/swagger-ui
+        container_name: Dev.Coasters.Cluster.Swagger
+        environment:
+            - URLS=[{"name":"Dev Offline Node","url":"http://localhost:3050/offline/"},{"name":"Dev Cluster Node-1","url":"http://localhost:3050/cluster/node-1/"},{"name":"Dev Cluster Node-2","url":"http://localhost:3050/cluster/node-2/"}]
+            - DEEP_LINKING=true
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.dev-cluster-swagger.rule=PathPrefix(`/`)
+            - traefik.http.services.dev-cluster-swagger.loadbalancer.server.port=8080
+        networks:
+            - coasters-backend-services
+
+networks:
+    coasters-backend-services:
+        name: Shared.Coasters.Backend.Services
+        driver: bridge

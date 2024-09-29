@@ -21,39 +21,49 @@ services:
             - REDIS_HOST=Shared.Coasters.Redis
             - REDIS_PORT=6379
             - NODE_NAME=Coasters.Cluster.Node-1
-            - NODE_BASE_URL=http://localhost:3050
+            - NODE_BASE_URL=/cluster/node-1
             - PORT=3050
             - LOGS_DIRECTORY=/app/data/dev/cluster/node-1/logs/
             - COASTERS_DATABASE_PATH=/app/data/dev/cluster/node-1/coasters.db.json
         ports:
-            - 3050:3050 # http api
             - 9229:9229 # nodejs debugger
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
-            interval: 30s
+            interval: 5s
             timeout: 10s
             retries: 5
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.dev-cluster-node-1.rule=PathPrefix(`/cluster/node-1`)
+            - traefik.http.middlewares.dev-cluster-node-1-strip.stripprefix.prefixes=/cluster/node-1
+            - traefik.http.routers.dev-cluster-node-1.middlewares=dev-cluster-node-1-strip
+            - traefik.http.services.dev-cluster-node-1.loadbalancer.server.port=3050
 
     node-2:
         <<: *node
         container_name: Dev.Coasters.Cluster.Node-2
-        ports:
-            - 3051:3051 # http api
-            - 9230:9229 # nodejs debugger
         environment:
             - NODE_ENV=development
             - REDIS_HOST=Shared.Coasters.Redis
             - REDIS_PORT=6379
             - NODE_NAME=Coasters.Cluster.Node-2
-            - NODE_BASE_URL=http://localhost:3051
-            - PORT=3051
+            - NODE_BASE_URL=/cluster/node-2
+            - PORT=3050
             - LOGS_DIRECTORY=/app/data/dev/cluster/node-2/logs/
             - COASTERS_DATABASE_PATH=/app/data/dev/cluster/node-2/coasters.db.json
+        ports:
+            - 9230:9229 # nodejs debugger
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:3051/health"]
-            interval: 30s
+            test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
+            interval: 5s
             timeout: 10s
             retries: 5
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.dev-cluster-node-2.rule=PathPrefix(`/cluster/node-2`)
+            - traefik.http.middlewares.dev-cluster-node-2-strip.stripprefix.prefixes=/cluster/node-2
+            - traefik.http.routers.dev-cluster-node-2.middlewares=dev-cluster-node-2-strip
+            - traefik.http.services.dev-cluster-node-2.loadbalancer.server.port=3050
 
 networks:
     coasters-backend-services:
