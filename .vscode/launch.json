@@ -7,6 +7,18 @@
         {
             "type": "node",
             "request": "attach",
+            "name": "Debug: attach offline node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "port": 9229,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "sourceMaps": true,
+        },
+        {
+            "type": "node",
+            "request": "attach",
             "name": "Debug: attach node-1",
             "skipFiles": [
                 "<node_internals>/**"
