@@ -7,28 +7,31 @@ import { EnvConfig } from "./config/env"
 import { createWinstonLogger } from "./common/logger/create-logger"
 import { MicroserviceOptions, Transport } from "@nestjs/microservices"
 import { WsAdapter } from "@nestjs/platform-ws"
+import { ClusteringConfig } from "./config/clustering"
 
 function setupSwagger(app: INestApplication) {
     const { environment } = app.get(EnvConfig)
-
     if (environment !== "development") {
         return
     }
 
-    const { port } = app.get(ApiConfig)
+    const { node } = app.get(ClusteringConfig)
+
     const config = new DocumentBuilder()
         .setTitle("Coaster API")
         .setVersion("1.0")
         .setDescription("The Coaster API for Ajinware recruitment purposes")
-        .addServer(`http://localhost:${port}`, "Development API")
         .addTag("coasters", "Coasters management API")
         .addTag("wagons", "Wagons management API")
         .addTag("health", "Microservice health API")
         .addTag("statistics", "Coasters statistics API")
+        .addServer(node.baseUrl)
         .build()
 
     const document = SwaggerModule.createDocument(app, config)
-    SwaggerModule.setup("/", app, document)
+    app.getHttpAdapter().get("/", (req, res) => {
+        res.json(document)
+    })
 }
 
 async function bootstrap() {
