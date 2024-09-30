@@ -8,12 +8,14 @@ services:
             - DEEP_LINKING=true
         labels:
             - traefik.enable=true
+            - traefik.http.routers.prod-swagger.entrypoints=prod-env
             - traefik.http.routers.prod-swagger.rule=PathPrefix(`/`)
             - traefik.http.services.prod-swagger.loadbalancer.server.port=8080
         networks:
-            - coasters-backend-services
+            - coasters-backend-prod-services
 
 networks:
-    coasters-backend-services:
-        name: Shared.Coasters.Backend.Services
+    coasters-backend-prod-services:
+        name: Prod.Coasters.Backend.Services
         driver: bridge
+

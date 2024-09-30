@@ -26,14 +26,15 @@ services:
             retries: 5
         labels:
             - traefik.enable=true
+            - traefik.http.routers.prod-offline-node.entrypoints=prod-env
             - traefik.http.routers.prod-offline-node.rule=PathPrefix(`/offline/api`)
             - traefik.http.middlewares.prod-offline-node-strip.stripprefix.prefixes=/offline/api
             - traefik.http.routers.prod-offline-node.middlewares=prod-offline-node-strip
             - traefik.http.services.prod-offline-node.loadbalancer.server.port=3050
         networks:
-            - coasters-backend-services
+            - coasters-backend-prod-services
 
 networks:
-    coasters-backend-services:
-        name: Shared.Coasters.Backend.Services
+    coasters-backend-prod-services:
+        name: Prod.Coasters.Backend.Services
         driver: bridge

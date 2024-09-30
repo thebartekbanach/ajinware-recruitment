@@ -3,14 +3,14 @@ services:
         container_name: Prod.Coasters.Proxy
         image: traefik:2.9.6
         ports:
-            - 3051:80
+            - 3051:3051
         networks:
-            - coasters-backend-services
+            - coasters-backend-prod-services
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - ../traefik-config.yml:/etc/traefik/traefik.yml:ro
 
 networks:
-    coasters-backend-services:
-        name: Shared.Coasters.Backend.Services
+    coasters-backend-prod-services:
+        name: Prod.Coasters.Backend.Services
         driver: bridge

@@ -9,7 +9,7 @@ x-templates:
         volumes:
             - ../../data/:/app/data # mount the data directory
         networks:
-            - coasters-backend-services
+            - coasters-backend-prod-services
 
 services:
     prod-cluster-node-1:
@@ -33,6 +33,7 @@ services:
             retries: 5
         labels:
             - traefik.enable=true
+            - traefik.http.routers.prod-cluster-node-1.entrypoints=prod-env
             - traefik.http.routers.prod-cluster-node-1.rule=PathPrefix(`/cluster/node-1/api`)
             - traefik.http.middlewares.prod-cluster-node-1-strip.stripprefix.prefixes=/cluster/node-1/api
             - traefik.http.routers.prod-cluster-node-1.middlewares=prod-cluster-node-1-strip
@@ -59,12 +60,13 @@ services:
             retries: 5
         labels:
             - traefik.enable=true
+            - traefik.http.routers.prod-cluster-node-2.entrypoints=prod-env
             - traefik.http.routers.prod-cluster-node-2.rule=PathPrefix(`/cluster/node-2/api`)
             - traefik.http.middlewares.prod-cluster-node-2-strip.stripprefix.prefixes=/cluster/node-2/api
             - traefik.http.routers.prod-cluster-node-2.middlewares=prod-cluster-node-2-strip
             - traefik.http.services.prod-cluster-node-2.loadbalancer.server.port=3050
 
 networks:
-    coasters-backend-services:
-        name: Shared.Coasters.Backend.Services
+    coasters-backend-prod-services:
+        name: Prod.Coasters.Backend.Services
         driver: bridge

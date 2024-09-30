@@ -10,7 +10,7 @@ x-templates:
             - ../../:/app # mount the project root directory, backend hot reload
             - /app/node_modules # prevent node_modules from being overwritten
         networks:
-            - coasters-backend-services
+            - coasters-backend-dev-services
 
 services:
     dev-cluster-node-1:
@@ -34,6 +34,7 @@ services:
             retries: 5
         labels:
             - traefik.enable=true
+            - traefik.http.routers.dev-cluster-node-1.entrypoints=dev-env
             - traefik.http.routers.dev-cluster-node-1.rule=PathPrefix(`/cluster/node-1/api`)
             - traefik.http.middlewares.dev-cluster-node-1-strip.stripprefix.prefixes=/cluster/node-1/api
             - traefik.http.routers.dev-cluster-node-1.middlewares=dev-cluster-node-1-strip
@@ -60,12 +61,13 @@ services:
             retries: 5
         labels:
             - traefik.enable=true
+            - traefik.http.routers.dev-cluster-node-2.entrypoints=dev-env
             - traefik.http.routers.dev-cluster-node-2.rule=PathPrefix(`/cluster/node-2/api`)
             - traefik.http.middlewares.dev-cluster-node-2-strip.stripprefix.prefixes=/cluster/node-2/api
             - traefik.http.routers.dev-cluster-node-2.middlewares=dev-cluster-node-2-strip
             - traefik.http.services.dev-cluster-node-2.loadbalancer.server.port=3050
 
 networks:
-    coasters-backend-services:
-        name: Shared.Coasters.Backend.Services
+    coasters-backend-dev-services:
+        name: Dev.Coasters.Backend.Services
         driver: bridge
