@@ -211,12 +211,12 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
   - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L94-L152)
   - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L95)
 
-  - [ ] API każdej usługi wystawione jest pod ścieżką `/api`
-    - Tutaj dodaję wyjaśnienie: zadaniem było wystawienie środowiska deweloperskiego na porcie 3050 a produkcyjnego na porcie 3051, nie mogłem wystawić kilku serwerów za jednym portem więc użyłem traefika w formie proxy i routera, żeby zamontować działające węzły w podścieżkach wystawionych na danym porcie
-      - `@:#/offline/api` - serwer działający w trybie offline
-      - `@:#/cluster/node-1/api` - węzeł pierwszy klastra
-      - `@:#/cluster/node-2/api` - węzeł drugi klastra
-      - `@:#/` - dokumentacja swaggera, nie była częścią zadania, wystawiłem ją w bardzo łatwym do wpisania miejscu
+- [ ] API każdej usługi wystawione jest pod ścieżką `/api`
+  - Tutaj dodaję wyjaśnienie: zadaniem było wystawienie środowiska deweloperskiego na porcie 3050 a produkcyjnego na porcie 3051, nie mogłem wystawić kilku serwerów za jednym portem więc użyłem traefika w formie proxy i routera, żeby zamontować działające węzły w podścieżkach wystawionych na danym porcie
+    - `@:#/offline/api` - serwer działający w trybie offline
+    - `@:#/cluster/node-1/api` - węzeł pierwszy klastra
+    - `@:#/cluster/node-2/api` - węzeł drugi klastra
+    - `@:#/` - dokumentacja swaggera, nie była częścią zadania, wystawiłem ją w bardzo łatwym do wpisania miejscu
 
 - [ ] Wersja deweloperska
   - [ ] [Nasłuchuje na porcie 3050](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/proxy.docker-compose.yml#L5-L6)
