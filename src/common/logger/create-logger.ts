@@ -9,6 +9,11 @@ function inLogsDirectory(fileName: string) {
     return process.env.LOGS_DIRECTORY + fileName
 }
 
+const makeFileSelectiveOutputFilter = (targetLevel: string) =>
+    winston.format((log: winston.Logform.TransformableInfo) => {
+        return log.level === targetLevel ? log : false
+    })()
+
 export function createWinstonModuleConfig(isProduction: boolean) {
     return {
         level: isProduction ? "warn" : "info",
@@ -21,8 +26,6 @@ export function createWinstonModuleConfig(isProduction: boolean) {
                     WinstonModuleUtilities.format.nestLike("CoastersApp", {
                         colors: true,
                         prettyPrint: true,
-                        processId: true,
-                        appName: true,
                     }),
                 ),
             }),
@@ -30,18 +33,28 @@ export function createWinstonModuleConfig(isProduction: boolean) {
             new winston.transports.File({
                 filename: inLogsDirectory("error.log"),
                 level: "error",
-                format: winston.format.json(),
+                format: winston.format.combine(
+                    winston.format.json(),
+                    makeFileSelectiveOutputFilter("error"),
+                ),
             }),
 
             new winston.transports.File({
                 filename: inLogsDirectory("warn.log"),
                 level: "warn",
-                format: winston.format.json(),
+                format: winston.format.combine(
+                    winston.format.json(),
+                    makeFileSelectiveOutputFilter("warn"),
+                ),
             }),
 
             new winston.transports.File({
                 filename: inLogsDirectory("info.log"),
-                format: winston.format.json(),
+                level: "info",
+                format: winston.format.combine(
+                    winston.format.json(),
+                    makeFileSelectiveOutputFilter("info"),
+                ),
             }),
         ],
     }
