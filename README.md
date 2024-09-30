@@ -1,5 +1,7 @@
 # Rekrutacja Ajinware - System Kolejek Górskich
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/thebartekbanach/ajinware-recruitment)
+
 * [Wprowadzenie](#wprowadzenie)
 * [Moja interpretacja zadania rekrutacyjnego](#moja-interpretacja-zadania-rekrutacyjnego)
   + [System](#system)
@@ -192,24 +194,24 @@ Backend ma strukturę podzieloną na funkcjonalności (features). Poniżej znajd
 
 Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
 
-- [x] [Baza danych JSON](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/database/contexts/coasters-db-context.service.ts#L7-L16)
-  - [x] [Optymalizacja odczytu (cache) i zapisu (debounce)](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/common/database/cached-json-file-db-context.service.ts#L3-L45)
+- [x] [Baza danych JSON](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/database/contexts/coasters-db-context.service.ts#L7-L16)
+  - [x] [Optymalizacja odczytu (cache) i zapisu (debounce)](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/database/cached-json-file-db-context.service.ts#L3-L45)
 
 - [x] Rejestracja nowej kolejki góskiej
-  - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L60-L92)
-  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L61)
+  - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/coasters/coasters.controller.ts#L60-L92)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/coasters/coasters.controller.ts#L61)
 
 - [x] Rejestracja nowego wagonu
-  - [Metoda rejestrująca wagon](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L34-L69)
-  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L35)
+  - [Metoda rejestrująca wagon](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/wagons/wagons.controller.ts#L34-L69)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/wagons/wagons.controller.ts#L35)
 
 - [x] Usunięcie wagonu
-  - [Metoda usuwająca wagon](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L71-L110)
-  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons.controller.ts#L72)
+  - [Metoda usuwająca wagon](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/wagons/wagons.controller.ts#L71-L110)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/wagons/wagons.controller.ts#L72)
 
 - [x] Zmiana kolejki górskiej
-  - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L94-L152)
-  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L95)
+  - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/coasters/coasters.controller.ts#L94-L152)
+  - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/coasters/coasters.controller.ts#L95)
 
 - [x] API każdej usługi wystawione jest pod ścieżką `/api`
   - Tutaj dodaję wyjaśnienie: zadaniem było wystawienie środowiska deweloperskiego na porcie 3050 a produkcyjnego na porcie 3051, nie mogłem wystawić kilku serwerów za jednym portem więc użyłem traefika w formie proxy i routera, żeby zamontować działające węzły w podścieżkach wystawionych na danym porcie
@@ -219,36 +221,36 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
     - `@:#/` - dokumentacja swaggera, nie była częścią zadania, wystawiłem ją w bardzo łatwym do wpisania miejscu
 
 - [x] Wersja deweloperska
-  - [x] [Nasłuchuje na porcie 3050](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/proxy.docker-compose.yml#L5-L6)
-  - [x] [Poziom logowania `info`](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L14)
-  - [x] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L17-L28)
-  - [x] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L45)
+  - [x] [Nasłuchuje na porcie 3050](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/proxy.docker-compose.yml#L5-L6)
+  - [x] [Poziom logowania `info`](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L14)
+  - [x] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L17-L28)
+  - [x] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L30-L45)
 
 - [x] Wersja produkcyjna
   - UWAGA: muszę zaznaczyć, że ta "wersja produkcyjna" nie nadaje się do wystawienia na produkcję. Brakuje tu chociażby wsparcia credentiali dla redisa, czy wystawione są porty do debugowania. Ta konfiguracja to demo produkcji, zdaję sobie sprawę z jej mankamentów i potrafię wystawić taką usługę na staging oraz produkcję, jednak tutaj skupiłem się na zaprezentowaniu działania w różnych konfiguracjach.
-  - [x] [Nasłuchuje na porcie 3051](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/proxy.docker-compose.yml#L5-L6)
-  - [x] [Poziom logowania `warn`](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L14)
-  - [x] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L17-L28)
-  - [x] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L40) (plik `info.log` jest tworzony, ale nic nie jest pisane)
+  - [x] [Nasłuchuje na porcie 3051](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/prod/proxy.docker-compose.yml#L5-L6)
+  - [x] [Poziom logowania `warn`](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L14)
+  - [x] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L17-L28)
+  - [x] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L30-L40) (plik `info.log` jest tworzony, ale nic nie jest pisane)
 
 - [ ] Dane nie kolidują między środowiskiem deweloperskim a produkcyjnym
-  - [x] Baza danych ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L19) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/offline.docker-compose.yml#L16))
-  - [x] Pliki logów ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L18) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/offline.docker-compose.yml#L15))
+  - [x] Baza danych ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/offline.docker-compose.yml#L19) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/prod/offline.docker-compose.yml#L16))
+  - [x] Pliki logów ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/offline.docker-compose.yml#L18) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/prod/offline.docker-compose.yml#L15))
   - [x] Brak kolidacji w redisie
-    - [Wartość redlock wyboru lidera](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/leader-election/leader-election.service.ts#L46-L49)
-    - [Topic zdarzenia o zmianie lidera](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/constants.ts#L1-L6)
-    - [Topiki replikacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/data-sharing/database-rebuild/constants.ts#L5-L12)
-    - [Topiki synchronizacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/data-sharing/database-sync/constants.ts#L5)
+    - [Wartość redlock wyboru lidera](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/leader-election/leader-election.service.ts#L46-L49)
+    - [Topic zdarzenia o zmianie lidera](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/leader-election/constants.ts#L1-L6)
+    - [Topiki replikacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/data-sharing/database-rebuild/constants.ts#L5-L12)
+    - [Topiki synchronizacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/data-sharing/database-sync/constants.ts#L5)
 
 - [x] Redis uruchomiony jest poza docker-compose na lokalnej maszynie i łączymy się do niego z wewnątrz kontenera
   - W celu uproszenia konfiguracji wystawiłem Redisa w kontenerze za pomocą oddzielnego docker-compose
   - Jak zrozumiałem, w zadaniu chodzi o przetestowanie, czy usługi nie kolidują ze sobą w jednocześnie uruchomionym trybie deweloperskim i produkcyjnym
-  - Możemy uruchomić jednocześnie wersję deweloperską oraz produkcyjną, [**obie wersje łączą się do tego samego Redisa**](https://github.com/thebartekbanach/ajinware-recruitment/blob/9e07076df960e8965ed0d07199b30c3be1c9b039/infra/redis.docker-compose.yml#L1-L18), co umożliwia przetestowanie tego wymogu
+  - Możemy uruchomić jednocześnie wersję deweloperską oraz produkcyjną, [**obie wersje łączą się do tego samego Redisa**](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/redis.docker-compose.yml#L1-L18), co umożliwia przetestowanie tego wymogu
 
 - [x] Statysyki i monitorowanie
-  - [Obliczanie statystyk dla kolejek](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/coaster-statistics.service.ts#L1-L70)
-  - [Frontend pokazujący ostrzeżenia oraz statystyki](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/statistics-console-serve.service.ts#L23-L102)
-  - Frontend statystyk kolejek górskich pobiera aktualną listę statystyk o kolejkach i za pomocą [linku **websocketowego**](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/statistics.gateway.ts#L8-L37) aktualizuje dane na żywo
+  - [Obliczanie statystyk dla kolejek](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/statistics/coaster-statistics.service.ts#L1-L70)
+  - [Frontend pokazujący ostrzeżenia oraz statystyki](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/statistics/statistics-console-serve.service.ts#L23-L102)
+  - Frontend statystyk kolejek górskich pobiera aktualną listę statystyk o kolejkach i za pomocą [linku **websocketowego**](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/statistics/statistics.gateway.ts#L8-L37) aktualizuje dane na żywo
   - [x] Konsola statystyk jest zainicjowana z istniejącymi już kolejkami
   - [x] Aktualizacje na żywo działają
   - [x] Każdy wagon musi wrócić przed końcem czasu działania kolejki górskiej
@@ -261,19 +263,19 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
     - Tutaj dodaję komentarz: każdy wagonik może mieć inną liczbę miejsc, dlatego nie da się wprost powiedzieć ile wagoników potrzeba, zamiast tego system pokazuje statystykę `aktualna liczba pasażerów`/`liczba pasażerów możliwych do obsłużenia`
 
 - [ ] Rozproszony system zarządzania
-  - [x] Każdy węzeł może działać autonomicznie (patrz [*tryb offline*](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L20))
+  - [x] Każdy węzeł może działać autonomicznie (patrz [*tryb offline*](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/offline.docker-compose.yml#L20))
   - [x] System wybiera węzeł-lidera w sieci i rozgłasza go do wszystkich węzłów
-    - [Konfiguracja przykładowej sieci w docker-compose](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/cluster.docker-compose.yml#L1-L72)
-    - [Moduł rozgrywający wybory na lidera klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.service.ts#L11-L88)
-    - [Cron wywołujący próbę przejęcia władzy w klastrze](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.controller.ts#L19-L22)
-    - [Każdy nowy węzeł w sieci szybko dowiaduje się kto jest liderem](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.service.ts#L79-L86)
-    - [Obsługa zdarzenia o nowym liderze klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/leader-election/leader-election.controller.ts#L24-L30)
+    - [Konfiguracja przykładowej sieci w docker-compose](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/cluster.docker-compose.yml#L1-L72)
+    - [Moduł rozgrywający wybory na lidera klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/leader-election/leader-election.service.ts#L11-L88)
+    - [Cron wywołujący próbę przejęcia władzy w klastrze](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/leader-election/leader-election.controller.ts#L19-L22)
+    - [Każdy nowy węzeł w sieci szybko dowiaduje się kto jest liderem](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/leader-election/leader-election.service.ts#L79-L86)
+    - [Obsługa zdarzenia o nowym liderze klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/leader-election/leader-election.controller.ts#L24-L30)
   - [x] Po usunięciu węzła-lidera z sieci, sieć wybiera nowego lidera
-  - [x] [Po dołączeniu do sieci następuje replikacja bazy danych nowego węzła z siecią](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/data-sharing/database-rebuild/leader-initialized.handler.ts#L8-L35)
-  - [x] [Gdy węzeł jest w sieci, wszystkie nowe zmiany bazy danych są synchronizowane pomiędzy węzłami](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/data-sharing/database-sync/coaster-updated.handler.ts#L9-L44)
-  - [x] [Synchronizacja danych między węzłami działa asynchronicznie](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/clustering/data-sharing/database-sync/coaster-updated.handler.ts#L9) (w NestJS/CQRS eventy są asynchroniczne, fire and forget)
+  - [x] [Po dołączeniu do sieci następuje replikacja bazy danych nowego węzła z siecią](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/data-sharing/database-rebuild/leader-initialized.handler.ts#L8-L35)
+  - [x] [Gdy węzeł jest w sieci, wszystkie nowe zmiany bazy danych są synchronizowane pomiędzy węzłami](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/data-sharing/database-sync/coaster-updated.handler.ts#L9-L44)
+  - [x] [Synchronizacja danych między węzłami działa asynchronicznie](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/clustering/data-sharing/database-sync/coaster-updated.handler.ts#L9) (w NestJS/CQRS eventy są asynchroniczne, fire and forget)
   - [x] Zmiany wprowadzane są w lokalnej bazie danych natychmiast, synchronizacja dzieje się w tle
-    - [Tworzenie kolejek górskich](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coaster-creation/create-coaster.handler.ts#L23-L27)
-    - [Modyfikacja kolejek górskich](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coaster-modification/modify-coaster.handler.ts#L37-L44)
-    - [Tworzenie wagoników](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons-creation/create-wagon.handler.ts#L40-L52)
-    - [Usuwanie wagoników](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/wagons/wagons-deletion/delete-wagon.handler.ts#L32-L52)
+    - [Tworzenie kolejek górskich](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/coasters/coaster-creation/create-coaster.handler.ts#L23-L27)
+    - [Modyfikacja kolejek górskich](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/coasters/coaster-modification/modify-coaster.handler.ts#L37-L44)
+    - [Tworzenie wagoników](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/wagons/wagons-creation/create-wagon.handler.ts#L40-L52)
+    - [Usuwanie wagoników](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/features/wagons/wagons-deletion/delete-wagon.handler.ts#L32-L52)
