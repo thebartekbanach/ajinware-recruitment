@@ -10,7 +10,7 @@ services:
         environment:
             - NODE_ENV=production
             - NODE_NAME=Coasters.Offline
-            - NODE_BASE_URL=/offline
+            - NODE_BASE_URL=/offline/api
             - PORT=3050
             - LOGS_DIRECTORY=/app/data/prod/offline/logs/
             - COASTERS_DATABASE_PATH=/app/data/prod/offline/coasters.db.json
@@ -26,8 +26,8 @@ services:
             retries: 5
         labels:
             - traefik.enable=true
-            - traefik.http.routers.prod-offline-node.rule=PathPrefix(`/offline`)
-            - traefik.http.middlewares.prod-offline-node-strip.stripprefix.prefixes=/offline
+            - traefik.http.routers.prod-offline-node.rule=PathPrefix(`/offline/api`)
+            - traefik.http.middlewares.prod-offline-node-strip.stripprefix.prefixes=/offline/api
             - traefik.http.routers.prod-offline-node.middlewares=prod-offline-node-strip
             - traefik.http.services.prod-offline-node.loadbalancer.server.port=3050
         networks:

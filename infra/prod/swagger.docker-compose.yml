@@ -4,7 +4,7 @@ services:
         image: swaggerapi/swagger-ui
         container_name: Prod.Coasters.Swagger
         environment:
-            - URLS=[{"name":"Prod Offline Node","url":"http://localhost:3051/offline/"},{"name":"Prod Cluster Node-1","url":"http://localhost:3051/cluster/node-1/"},{"name":"Prod Cluster Node-2","url":"http://localhost:3051/cluster/node-2/"}]
+            - URLS=[{"name":"Prod Offline Node","url":"/offline/api/"},{"name":"Prod Cluster Node-1","url":"/cluster/node-1/api/"},{"name":"Prod Cluster Node-2","url":"/cluster/node-2/api/"}]
             - DEEP_LINKING=true
         labels:
             - traefik.enable=true

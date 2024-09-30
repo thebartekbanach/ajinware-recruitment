@@ -4,7 +4,7 @@ services:
         image: swaggerapi/swagger-ui
         container_name: Dev.Coasters.Swagger
         environment:
-            - URLS=[{"name":"Dev Offline Node","url":"http://localhost:3050/offline/"},{"name":"Dev Cluster Node-1","url":"http://localhost:3050/cluster/node-1/"},{"name":"Dev Cluster Node-2","url":"http://localhost:3050/cluster/node-2/"}]
+            - URLS=[{"name":"Dev Offline Node","url":"/offline/api/"},{"name":"Dev Cluster Node-1","url":"/cluster/node-1/api/"},{"name":"Dev Cluster Node-2","url":"/cluster/node-2/api/"}]
             - DEEP_LINKING=true
         labels:
             - traefik.enable=true
