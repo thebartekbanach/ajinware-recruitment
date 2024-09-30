@@ -101,15 +101,31 @@ Pierwsze kroki, po uruchomieniu:
 Przydatną komendą będzie:
 ```shell
 task # lists all available tasks
+
+# The result of this command is:
+# * infra:cluster:dev:start:        Start the development cluster
+# * infra:cluster:prod:start:       Start the production cluster
+# * infra:compose:cleanup:          Stop and remove all dev and prod containers, except redis
+# * infra:offline:dev:start:        Start the development offline server
+# * infra:offline:prod:start:       Start the production offline server
+# * infra:redis:start:              Start the redis server in background
+# * infra:redis:stop:               Stop the redis server
 ```
 
 Komendy w `task` pozwalają uruchomić pojedynczy węzeł w trybie offline lub klaster w trybach deweloperskim oraz produkcyjnym.
 
 ### Struktura folderów
 - `./infra` - zawiera pliki konfiguracyjne docker-compose i inne dla środowisk `dev` oraz `prod`
+- `./data` - folder w którym zapisywane są bazy danych i logi węzłów
+  - `./dev/offline`
+  - `./dev/cluster/node-1`
+  - `./dev/cluster/node-2`
+  - `./prod/offline`
+  - `./prod/cluster/node-1`
+  - `./prod/cluster/node-2`
 - `./src` - pliki źródłowe backedu
 
-### Konfiguracja VSCode
+### Preferowany edytor kodu
 
 Projekt został stworzony przy użyciu Visual Studio Code, więc najlepszym rozwiązaniem będzie użycie tego właśnie edytora.
 
@@ -124,27 +140,31 @@ Dostępne wartości to:
 - `Cluster Node-1`
 - `Cluster Node-2`
 
-**Po uruchomieniu klastra i wyborze `Offline Node` (i na odwrót) dostaniemy błąd pobrania schemy Open API. Błąd ten nie uniemożliwia zmiany środoiwska w Swaggerze.**
+Na każdym odrębnym środowisku (`dev - 3050` i `prod - 3051`) wartości te celują w oddzielny port, nie trzeba nic konfigurować.
+
+> Po uruchomieniu klastra i wyborze `Offline Node` (i na odwrót) dostaniemy błąd pobrania schemy Open API. Błąd ten nie uniemożliwia zmiany środoiwska w Swaggerze. **Dlatego jeśli dostajesz błąd braku połączenia z serwerem, to po prostu ZMIEŃ DEFINICJĘ**.
 
 Po uruchomieniu projektu zachęcam do wejścia na dokumentację Swaggera lub *konsolę statystyk*:
 
 - Środowisko dev:
   - http://localhost:3050/ - dokumentacja api środowiska deweloperskiego
-  - http://localhost:3050/offline/statistics/console - konsola ze statystykami na żywo dla offline node
-  - http://localhost:3050/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 1
-  - http://localhost:3050/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 2
+  - http://localhost:3050/offline/api/statistics/console - konsola ze statystykami na żywo dla offline node
+  - http://localhost:3050/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 1
+  - http://localhost:3050/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 2
 
 - Środowisko prod:
   - http://localhost:3051/ - dokumentacja api środowiska produkcyjnego
   - http://localhost:3051/offline/statistics/console - konsola ze statystykami na żywo dla offline node
-  - http://localhost:3051/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 1
-  - http://localhost:3051/cluster/node-1/statistics/console - konsola ze statystykami na żywo dla cluster node 2
+  - http://localhost:3051/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 1
+  - http://localhost:3051/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 2
 
 Znając te linki, można klikać!
 
 #### Używając Github Codespaces, musimy użyć zakładki `PORTY` żeby dowiedzieć się pod jakim adresem nasz port został wystawiony
 
 ![example](codespace-port-forwarding.png)
+
+Następnie klikamy opcję `Otwórz w przeglądarce` i możemy eksplorować API!
 
 ## Struktura backendu
 
@@ -159,7 +179,7 @@ Backend ma strukturę podzieloną na funkcjonalności (features). Poniżej znajd
   - `statistics` - statystyki, alerty, dashboard prezentujący wszystkie kolejki na żywo
   - `health` - moduł obsługujący healthchecki, w trybie klastra sprawdza łącznąść redisem i stan replikacji bazy danych
   - `clustering` - klastrowanie, replikacja bazy danych, elekcja lidera
-    - `redis-communication` - podstawowe, reużywalne klocki do komunikacji z redisem
+    - `redis-communication` - podstawowe, reużywalne klocki do komunikacji z redisem w postaci Nestowych modułów
     - `leader-election` - moduł implementujący wybór lidera przy użyciu **REDLOCK** oraz ogłaszaniem liderstwa w sieci
     - `data-sharing` - synchronizacja bazy danych pomiędzy węzłami
       - `database-rebuild` - odbudowa lokalnej bazy danych po dołączeniu do działającego klastra
@@ -187,6 +207,13 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
 - [ ] Zmiana kolejki górskiej
   - [Metoda wykonująca request](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L94-L152)
   - [Redirect do węzła-lidera w trybie klastra](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/coasters/coasters.controller.ts#L95)
+
+  - [ ] API każdej usługi wystawione jest pod ścieżką `/api`
+    - Tutaj dodaję wyjaśnienie: zadaniem było wystawienie środowiska deweloperskiego na porcie 3050 a produkcyjnego na porcie 3051, nie mogłem wystawić kilku serwerów za jednym portem więc użyłem traefika w formie proxy i routera, żeby zamontować działające węzły w podścieżkach wystawionych na danym porcie
+      - `@:#/offline/api` - serwer działający w trybie offline
+      - `@:#/cluster/node-1/api` - węzeł pierwszy klastra
+      - `@:#/cluster/node-2/api` - węzeł drugi klastra
+      - `@:#/` - dokumentacja swaggera, nie była częścią zadania, wystawiłem ją w bardzo łatwym do wpisania miejscu
 
 - [ ] Wersja deweloperska
   - [ ] [Nasłuchuje na porcie 3050](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/proxy.docker-compose.yml#L5-L6)
@@ -219,6 +246,8 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
   - [ ] Do obsługi każdego wagonu dodatkowo potrzeba 2 osób
   - [ ] Raportowanie brakującej liczby pracowników
   - [ ] Raportowanie nadmiarowych pracowników
+  - [ ] Raportowanie zbyt małej liczby wagoników
+    - Tutaj dodaję komentarz: każdy wagonik może mieć inną liczbę miejsc, dlatego nie da się wprost powiedzieć ile wagoników potrzeba, zamiast tego system pokazuje statystykę `aktualna liczba pasażerów`/`liczba pasażerów możliwych do obsłużenia`
 
 - [ ] Rozproszony system zarządzania
   - [ ] Każdy węzeł może działać autonomicznie (patrz [*tryb offline*](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L20))
