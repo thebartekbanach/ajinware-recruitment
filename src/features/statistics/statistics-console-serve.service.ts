@@ -27,7 +27,8 @@ export class StatisticsConsoleServeService {
 
     <script>
         const host = window.location.host
-        const wsUrl = "ws://" + window.location.host + "${this.clusteringConfig.node.baseUrl}/statistics/live"
+        const wsProtocol = window.location.protocol.replace("http", "ws")
+        const wsUrl = wsProtocol + "//" + window.location.host + "${this.clusteringConfig.node.baseUrl}/statistics/live"
 
         const statisticsData = []
         const statisticsElement = document.getElementById("statistics")
@@ -39,6 +40,10 @@ export class StatisticsConsoleServeService {
 
             if (coaster.availablePersonnelNumber < coaster.expectedPersonnelNumber) {
                 return "Problem: zbyt mało personelu, proszę dodać personel do kolejki"
+            }
+
+            if (coaster.availablePersonnelNumber > coaster.expectedPersonnelNumber * 2) {
+                return "Problem: zbyt dużo personelu, proszę usunąć personel z kolejki"
             }
 
             if (coaster.numberOfClientsCanBeServedDaily > coaster.numberOfClientsDaily * 2) {
