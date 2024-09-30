@@ -95,7 +95,7 @@ tasks:
                   CMD: logs -f dev-cluster-node-1 dev-cluster-node-2
 
     offline:prod:start:
-        desc: Start the development offline server
+        desc: Start the production offline server
         dir: prod
         cmds:
             - task: compose:exec
@@ -117,7 +117,7 @@ tasks:
                   CMD: logs -f prod-offline
 
     cluster:prod:start:
-        desc: Start the development cluster
+        desc: Start the production cluster
         deps: [redis:start]
         dir: prod
         cmds:
