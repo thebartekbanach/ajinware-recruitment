@@ -40,7 +40,7 @@ Jeżeli o czymś nie wspomniałem, oznacza to że instrukcje były jasne i stara
 - Klaster działa tak, że jeden węzeł zapisuje dane i dba o spójność systemu generując ID w bazie danych a reszta węzłów może służyć za repliki do odczytu danych implementujące strategię `eventual consistency`
 
 ### Replikacja
-- Operacje modyfikujące bazę danych mają być przeprowadzane z węzła lidera, a węzły-followery mają uniemożliwiać w jakiś sposób swojego api do modyfikacji bazy danych (dodawania i edycji kolejek oraz wagoników)
+- Operacje modyfikujące bazę danych mają być przeprowadzane z węzła lidera, a węzły-followery mają uniemożliwiać w jakiś sposób użycie swojego api do modyfikacji bazy danych (dodawania i edycji kolejek oraz wagoników)
 - Każdy węzeł ma odrębną bazę danych która ma być replikowana z węzła-lidera na węzły-followery
 - Podczas dołączania do klastra, baza danych dołączającego węzła ma być zsynchronizowana z resztą klastra
 - Replikacja dzieje się asynchronicznie i nie blokuje działania aplikacji
