@@ -3,17 +3,20 @@ import { AppModule } from "./app.module"
 import { ApiConfig } from "./config/api"
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger"
 import { INestApplication, ValidationPipe } from "@nestjs/common"
-import { EnvConfig } from "./config/env"
 import { createWinstonLogger } from "./common/logger/create-logger"
 import { MicroserviceOptions, Transport } from "@nestjs/microservices"
 import { WsAdapter } from "@nestjs/platform-ws"
 import { ClusteringConfig } from "./config/clustering"
 
 function setupSwagger(app: INestApplication) {
-    const { environment } = app.get(EnvConfig)
-    if (environment !== "development") {
-        return
-    }
+    // For demonstration purposes we are unlocking swagger on "prod",
+    // but in real life application, we would leave it uncommented,
+    // as we probably do not want to share our api definition with strangers
+
+    // const { environment } = app.get(EnvConfig)
+    // if (environment !== "development") {
+    //     return
+    // }
 
     const { node } = app.get(ClusteringConfig)
 
