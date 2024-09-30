@@ -9,8 +9,16 @@ function inLogsDirectory(fileName: string) {
     return process.env.LOGS_DIRECTORY + fileName
 }
 
-const makeFileSelectiveOutputFilter = (targetLevel: string) =>
+const makeFileSelectiveOutputFilter = (
+    targetLevel: string,
+    isProduction: boolean,
+) =>
     winston.format((log: winston.Logform.TransformableInfo) => {
+        const isAllowedInProduction = ["error", "warn"].includes(log.level)
+        if (isProduction && !isAllowedInProduction) {
+            return false
+        }
+
         return log.level === targetLevel ? log : false
     })()
 
@@ -35,7 +43,7 @@ export function createWinstonModuleConfig(isProduction: boolean) {
                 level: "error",
                 format: winston.format.combine(
                     winston.format.json(),
-                    makeFileSelectiveOutputFilter("error"),
+                    makeFileSelectiveOutputFilter("error", isProduction),
                 ),
             }),
 
@@ -44,7 +52,7 @@ export function createWinstonModuleConfig(isProduction: boolean) {
                 level: "warn",
                 format: winston.format.combine(
                     winston.format.json(),
-                    makeFileSelectiveOutputFilter("warn"),
+                    makeFileSelectiveOutputFilter("warn", isProduction),
                 ),
             }),
 
@@ -53,7 +61,7 @@ export function createWinstonModuleConfig(isProduction: boolean) {
                 level: "info",
                 format: winston.format.combine(
                     winston.format.json(),
-                    makeFileSelectiveOutputFilter("info"),
+                    makeFileSelectiveOutputFilter("info", isProduction),
                 ),
             }),
         ],
