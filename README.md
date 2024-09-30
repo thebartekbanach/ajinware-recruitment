@@ -27,9 +27,9 @@
 
 To repozytorium zawiera rozwiązanie zadania rekrutacyjnego na stanowisko Backend Developer w firmie Ajinware.
 
-Możliwe, że trochę przesadziłem z tym rozwiązaniem, ale chciałem pokazać, że potrafię zrobić coś więcej niż tylko zaimplementować API.
+Możliwe, że trochę przesadziłem z tym rozwiązaniem, ale chciałem pokazać, że potrafię zrobić coś więcej niż tylko zaimplementować API. Z drugiej strony pewnych rzeczy nie dopracowałem tak, jak czuję, że mogłem. Niemniej musiałem gdzieś postawić granicę, ile czasu mogę poświęcić na wykonanie zadania rekrutacyjnego.
 
-Zanim przejdziemy do opisu rozwiązania, muszę zaznaczyć, że specyfikacja zadania była w wielu miejscach nie jasna, a nawet sprzeczna. W związku z tym, w niektórych miejscach musiałem podjąć decyzje, które mogą być niezgodne z oczekiwaniami. Dlatego pierwszą rzeczą, którą opiszę, będzie moja interpretacja zadania.
+Zanim przejdziemy do opisu rozwiązania, muszę zaznaczyć, że specyfikacja zadania była w wielu miejscach niejasna, a nawet sprzeczna. W związku z tym, w niektórych miejscach musiałem podjąć decyzje, które mogą być niezgodne z oczekiwaniami. Dlatego pierwszą rzeczą, którą opiszę, będzie moja interpretacja zadania.
 
 ## Moja interpretacja zadania rekrutacyjnego
 
@@ -155,13 +155,13 @@ Po uruchomieniu projektu zachęcam do wejścia na dokumentację Swaggera lub *ko
   - http://localhost:3050/ - dokumentacja api środowiska deweloperskiego
   - http://localhost:3050/offline/api/statistics/console - konsola ze statystykami na żywo dla offline node
   - http://localhost:3050/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 1
-  - http://localhost:3050/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 2
+  - http://localhost:3050/cluster/node-2/api/statistics/console - konsola ze statystykami na żywo dla cluster node 2
 
 - Środowisko prod:
   - http://localhost:3051/ - dokumentacja api środowiska produkcyjnego
   - http://localhost:3051/offline/api/statistics/console - konsola ze statystykami na żywo dla offline node
   - http://localhost:3051/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 1
-  - http://localhost:3051/cluster/node-1/api/statistics/console - konsola ze statystykami na żywo dla cluster node 2
+  - http://localhost:3051/cluster/node-2/api/statistics/console - konsola ze statystykami na żywo dla cluster node 2
 
 Znając te linki, można klikać!
 
