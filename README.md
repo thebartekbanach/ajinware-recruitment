@@ -96,7 +96,10 @@ Projekt powinien też wstać lokalnie bez użycia devcontainera.
 
 Pierwsze kroki, po uruchomieniu:
 - `npm i` - instalacja paczek projektu
+- `task infra:offline:dev:start` - uruchomienie pojedynczego węzła w trybie offline używając `docker-compose`
 - `task infra:cluster:dev:start` - uruchomienie klastra w trybie deweloperskim przy użyciu docker-compose`
+
+> Uwaga: nie ma potrzeby uruchamiania redisa za pomocą komendy `task infra:redis:start`, **każda komenda wymagająca redisa sama upewnia się, że redis jest uruchomiony**
 
 Przydatną komendą będzie:
 ```shell
