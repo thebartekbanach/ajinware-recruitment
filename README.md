@@ -225,10 +225,11 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
   - [ ] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L45)
 
 - [ ] Wersja produkcyjna
+  - UWAGA: muszę zaznaczyć, że ta "wersja produkcyjna" nie nadaje się do wystawienia na produkcję. Brakuje tu chociażby wsparcia credentiali dla redisa, czy wystawione są porty do debugowania. Ta konfiguracja te demo produkcji, zdaję sobie sprawę z jej mankamentów i potrafię wystawić taką usługę na staging oraz produkcję, jednak tutaj skupiłem się na zaprezentowaniu działania w różnych konfiguracjach.
   - [ ] [Nasłuchuje na porcie 3051](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/proxy.docker-compose.yml#L5-L6)
   - [ ] [Poziom logowania `warn`](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L14)
   - [ ] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L17-L28)
-  - [ ] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L40) (plik log jest tworzony, ale nic nie jest pisane)
+  - [ ] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/common/logger/create-logger.ts#L30-L40) (plik `info.log` jest tworzony, ale nic nie jest pisane)
 
 - [ ] Dane nie kolidują między środowiskiem deweloperskim a produkcyjnym
   - [ ] Baza danych ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/dev/offline.docker-compose.yml#L19) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/infra/prod/offline.docker-compose.yml#L16))
