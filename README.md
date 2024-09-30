@@ -236,6 +236,11 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
     - [Topiki replikacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/data-sharing/database-rebuild/constants.ts#L5-L12)
     - [Topiki synchronizacji bazy danych](https://github.com/thebartekbanach/ajinware-recruitment/blob/c1e731f44c47d7f66811c68d5312a226913c793c/src/features/clustering/data-sharing/database-sync/constants.ts#L5)
 
+- [ ] Redis uruchomiony jest poza docker-compose na lokalnej maszynie i łączymy się do niego z wewnątrz kontenera
+  - W celu uproszenia konfiguracji wystawiłem Redisa w kontenerze za pomocą oddzielnego docker-compose
+  - Jak zrozumiałem, w zadaniu chodzi o przetestowanie, czy usługi nie kolidują ze sobą w jednocześnie uruchomionym trybie deweloperskim i produkcyjnym
+  - Możemy uruchomić jednocześnie wersję deweloperską oraz produkcyjną, **obie wersje łączą się do tego samego Redisa**, co umożliwia przetestowanie tego wymogu
+
 - [ ] Statysyki i monitorowanie
   - [Obliczanie statystyk dla kolejek](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/coaster-statistics.service.ts#L1-L70)
   - [Frontend pokazujący ostrzeżenia oraz statystyki](https://github.com/thebartekbanach/ajinware-recruitment/blob/d0faec2716bda76a4cf7d46414f7c2b88f52e805/src/features/statistics/statistics-console-serve.service.ts#L23-L102)
