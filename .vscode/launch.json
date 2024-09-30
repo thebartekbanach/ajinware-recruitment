@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Debug: attach offline node",
+            "name": "Debug: attach dev offline node",
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -19,24 +19,59 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Debug: attach node-1",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "port": 9229,
-            "localRoot": "${workspaceFolder}",
-            "remoteRoot": "/app",
-            "sourceMaps": true,
-        },
-
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Debug: attach node-2",
+            "name": "Debug: attach dev node-1",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "port": 9230,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "sourceMaps": true,
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Debug: attach dev node-2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "port": 9231,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "sourceMaps": true,
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Debug: attach prod offline node",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "port": 9232,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "sourceMaps": true,
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Debug: attach prod node-1",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "port": 9233,
+            "localRoot": "${workspaceFolder}",
+            "remoteRoot": "/app",
+            "sourceMaps": true,
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Debug: attach prod node-2",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "port": 9234,
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "/app",
             "sourceMaps": true,

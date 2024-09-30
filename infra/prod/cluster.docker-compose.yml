@@ -25,7 +25,7 @@ services:
             - LOGS_DIRECTORY=/app/data/prod/cluster/node-1/logs/
             - COASTERS_DATABASE_PATH=/app/data/prod/cluster/node-1/coasters.db.json
         ports:
-            - 9229:9229 # nodejs debugger
+            - 9233:9229 # nodejs debugger
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
             interval: 5s
@@ -51,7 +51,7 @@ services:
             - LOGS_DIRECTORY=/app/data/prod/cluster/node-2/logs/
             - COASTERS_DATABASE_PATH=/app/data/prod/cluster/node-2/coasters.db.json
         ports:
-            - 9230:9229 # nodejs debugger
+            - 9234:9229 # nodejs debugger
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
             interval: 5s

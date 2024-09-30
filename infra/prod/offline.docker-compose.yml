@@ -18,7 +18,7 @@ services:
         volumes:
             - ../../data/:/app/data # mount the data directory
         ports:
-            - 9229:9229 # nodejs debugger
+            - 9232:9229 # nodejs debugger
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
             interval: 5s
