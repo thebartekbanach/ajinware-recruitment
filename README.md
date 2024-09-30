@@ -233,7 +233,7 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
   - [x] [Logi w konsoli](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L17-L28)
   - [x] [Logi są zapisywane do plików](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/src/common/logger/create-logger.ts#L30-L40) (plik `info.log` jest tworzony, ale nic nie jest pisane)
 
-- [ ] Dane nie kolidują między środowiskiem deweloperskim a produkcyjnym
+- [x] Dane nie kolidują między środowiskiem deweloperskim a produkcyjnym
   - [x] Baza danych ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/offline.docker-compose.yml#L19) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/prod/offline.docker-compose.yml#L16))
   - [x] Pliki logów ([dev](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/offline.docker-compose.yml#L18) i [prod](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/prod/offline.docker-compose.yml#L15))
   - [x] Brak kolidacji w redisie
@@ -262,7 +262,7 @@ Podgląd zadania rekrutacyjnego dostępny jest [tutaj](task.pdf).
   - [x] Raportowanie zbyt małej liczby wagoników
     - Tutaj dodaję komentarz: każdy wagonik może mieć inną liczbę miejsc, dlatego nie da się wprost powiedzieć ile wagoników potrzeba, zamiast tego system pokazuje statystykę `aktualna liczba pasażerów`/`liczba pasażerów możliwych do obsłużenia`
 
-- [ ] Rozproszony system zarządzania
+- [x] Rozproszony system zarządzania
   - [x] Każdy węzeł może działać autonomicznie (patrz [*tryb offline*](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/offline.docker-compose.yml#L20))
   - [x] System wybiera węzeł-lidera w sieci i rozgłasza go do wszystkich węzłów
     - [Konfiguracja przykładowej sieci w docker-compose](https://github.com/thebartekbanach/ajinware-recruitment/blob/main/infra/dev/cluster.docker-compose.yml#L1-L72)
